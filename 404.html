@@ -1,7 +1,67 @@
----
-layout: default
----
-
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title></title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+<div class="nav">
+    <ul>
+        
+        <li><a href="/" >Home</a></li>
+        
+        <li><a href="/about.html" >About</a></li>
+        
+    </ul>
+</div>
+<link rel="stylesheet" href="/lib/swiper/swiper.css">
+<style>
+    .swiper-container {
+        width: 100%;
+        height: 300px;
+    }
+    .swiper-container img{
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        
+        <div class="swiper-slide">
+            <img src="/assets/images/crousel/a.jpg" alt="slide1">
+        </div>
+        
+        <div class="swiper-slide">
+            <img src="/assets/images/crousel/b.jpg" alt="slide2">
+        </div>
+        
+        <div class="swiper-slide">
+            <img src="/assets/images/crousel/c.jpg" alt="slide3">
+        </div>
+        
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+<script src="/lib/swiper/swiper.js"></script>
+<script>
+    new Swiper('.swiper-container', {
+        loop: true, // 循环模式选项
+        // 如果需要分页器
+        pagination: {
+            el: '.swiper-pagination'
+        }
+    });
+</script>
 <style type="text/css" media="screen">
   .container {
     margin: 10px auto;
@@ -22,3 +82,6 @@ layout: default
   <p><strong>Page not found :(</strong></p>
   <p>The requested page could not be found.</p>
 </div>
+
+</body>
+</html>
