@@ -1,0 +1,130 @@
+
+* { margin: 0; padding: 0; }
+.calendar {
+  display: none;
+  width: 200px;
+  padding: 10px;
+  margin: 20px auto 0;
+  background-color: #fff;
+  border-radius: 6px;
+  position: relative;
+}
+.calendar-title {
+  position: relative;
+  padding-bottom: 10px;
+}
+.calendar-title a.title {
+  display: inline-block;
+  font-size: 16px;
+  text-indent: 5px;
+  color: #FF808E;
+  width: 100px;
+  vertical-align: middle;
+}
+#backToday {
+  position: absolute;
+  display: inline-block;
+  text-decoration: none;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  border-radius: 50%;
+  color: #fff;
+  background-color: #FF808E;
+  font-size: 16px;
+  right: 28px;
+}
+.calendar-title .arrow {
+  display: inline-block;
+  width: 80px;
+  vertical-align: middle;
+
+}
+.calendar-title .arrow span {
+  color: #999;
+  font-size: 26px;
+  cursor: pointer;
+  line-height: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.calendar-title .arrow span:hover {
+  color: #666;
+}
+.calendar-title .arrow-prev {
+  float: left;
+}
+.calendar-title .arrow-next {
+  float: right;
+}
+.calendar-week,
+.calendar-date {
+  overflow: hidden;
+}
+.calendar-week .item,
+.calendar-date .item {
+  float: left;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+}
+.calendar-week {
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #FF808E;
+  font-size: 14px;
+}
+.calendar-date {}
+.calendar-date .item {
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+}
+.calendar-date .item:hover,
+.calendar-date .item-curMonth:hover {
+  background-color: #f0f0f0;
+}
+.calendar-date .item-curMonth {
+  color: #333;
+  font-weight: bold;
+}
+.calendar-date .item-curDay,
+.calendar-date .item-curDay:hover {
+  color: #fff;
+  background-color: #FF808E;
+}
+.calendar-date .item-selected,
+.calendar-date .item-selected:hover {
+  color: #FF808E;
+  background: #cde9d9;
+}
+.calendar-today {
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 100px;
+  height: 48px;
+  padding: 6px 10px;
+  background-color: #FF808E;
+  border-radius: 5px;
+}
+.calendar-today .triangle {
+  position: absolute;
+  top: 50%;
+  left: -16px;
+  margin-top: -8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent #FF808E transparent transparent;
+}
+.calendar-today p {
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+}

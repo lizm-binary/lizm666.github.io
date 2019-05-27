@@ -1,20 +1,41 @@
-<!DOCTYPE html>
-<html lang="zh">
-<!--[if IE 8]>
-<html class="no-js lt-ie9" lang="zh">
-<![endif]-->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <title>lizm</title>
-    <link rel="stylesheet" href="">
-</head>
-<body>
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
-<h3>Hello,lizm!</h3>
-<script src=""></script>
-</body>
+# layout: home
+
+layout: default
+title: Article List
+---
+<div class="container">
+    <div class="post-list">
+        <ul>
+            {% for post in site.posts %}
+            <li>
+                
+                <a class="post-title" href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
+                <div class="post-excerpt">{{ post.excerpt }}</div>
+                <div class="post-info">
+                    <span class="post-tag-label">标签:</span>
+                    {% for tag in post.tags %}
+                        <span class="post-tag">{{tag}}</span>
+                    {% endfor %}
+                    <span class="post-category-label">归类：</span>
+                    {% for category in post.categories %}
+                    <span class="post-category">{{category}}</span>
+                    {% endfor %}
+                    <span class="post-data-tag">发表日期：</span>
+                    <span class="post-date">{{ post.date|date:"%Y年%m月%d日 %H:%M" }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="sidebar-list">
+        {% include tagCloud.html %}
+        {% include search.html %}
+        {% include author.html %}
+        {% include datepicker.html %}
+        {% include hotPosts.html %}
+    </div>
+</div>
