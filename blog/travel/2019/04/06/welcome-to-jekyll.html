@@ -45,11 +45,19 @@
 <script src=""></script>
 </body>
 
-<div>
+<div class="container">
     <div class="post">
-        <div class="title">我的第一篇博客</div>
-        <div class="date">2019年04月06日 13:07</div>
-        Excerpt with multiple paragraphs
+        <div class="header">
+            <div class="title">我的第一篇博客</div>
+            <div class="info">
+                <span class="view-count">9812</span>
+                <span class="dot">·</span>
+                <span class="date">2019-04-06</span>
+                <span class="dot">·</span>
+                <span class="author">lizm</span>
+            </div>
+        </div>
+        <div class="content">Excerpt with multiple paragraphs
 
 Here's another paragraph in the excerpt.
 <!--more-->
@@ -69,7 +77,47 @@ Jekyll also offers powerful support for code snippets:
 
 Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
 
+</div>
+    </div>
+    <div class="sidebar-list">
+        <div class="tag-cloud">
+    <ul>
+        <li>JavaScript</li>
+        <li>Node.js</li>
+        <li>Vue</li>
+        <li>React</li>
+        <li>Koa2</li>
+        <li>Webpack</li>
+        <li>TypeScript</li>
+        <li>Express</li>
+    </ul>
+</div>
+        <div class="search-box">
+    <div class="search-holder">
+        <input class="search-input" type="text" placeholder="没事别瞎点搜索">
+    </div>
+</div>
+        <div class="blog-author">
+    <div class="avatar">
+        <img src="/assets/images/avatar/dfyc.jpeg" alt="" width="160">
+    </div>
+    <ul>
+        <li>昵称：Binary</li>
+        <li>性别：少年</li>
+        <li>生日：1993-03-29</li>
+        <li>签名：</li>
+        <li>hahaahahhahahahahahaahahhahahaahah</li>
+    </ul>
+</div>
+        <div class="date-picker">
+    <link rel="stylesheet" href="/lib/calendar/css/calendar.css">
+    <script src="/lib/jquery/jquery-3.4.1.js"></script>
+    <script src="/lib/calendar/js/calendar.js"></script>
+    <div id="calendar" class="calendar"></div>
+</div>
+        <div class="hot-posts">
 
+</div>
     </div>
 </div>
 
