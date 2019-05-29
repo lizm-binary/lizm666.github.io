@@ -11,6 +11,7 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <title>welcom to lizm's Blog</title>
+    <link rel="stylesheet" href="/lib/animate.css/animate.css">
     <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body>
@@ -64,7 +65,7 @@
 </script>
 <div class="container">
     <div class="post-list">
-        <ul>
+        <ul class="bounceInUp animated">
             
             <li>
                 
@@ -214,6 +215,18 @@ Here's another paragraph in the excerpt.
             </li>
             
         </ul>
+        <!-- Pagination links -->
+<div class="post-pagination">
+    <div class="pagination-box">
+        
+        <span class="previous">上一页</span>
+        
+        <span class="page-number">1 / 2</span>
+        
+        <a href="/page2" class="next">下一页</a>
+        
+    </div>
+</div>
     </div>
     <div class="sidebar-list">
         <div class="tag-cloud">
@@ -250,6 +263,24 @@ Here's another paragraph in the excerpt.
     <script src="/lib/jquery/jquery-3.4.1.js"></script>
     <script src="/lib/calendar/js/calendar.js"></script>
     <div id="calendar" class="calendar"></div>
+</div>
+        <div class="canvas-clock">
+    <script src="/lib/canvasClocks/js/canvas_clock.js"></script>
+    <div class="clock-box">
+        <canvas id="clock10_" width="200px" height="200px"></canvas>
+    </div>
+    <script>
+        clock_planets(200, document.getElementById('clock10_').getContext('2d'), {
+            'indicate': true,
+            'indicate_color': '#222',
+            'dial1_color': '#666600',
+            'dial2_color': '#81812e',
+            'dial3_color': '#9d9d5c',
+            'time_add': 1,
+            'time_24h': true,
+            'track': '#4b4b00'
+        });
+    </script>
 </div>
         <div class="hot-posts">
 

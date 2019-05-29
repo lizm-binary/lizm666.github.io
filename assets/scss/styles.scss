@@ -12,6 +12,8 @@ html, body {
 /*通用全局样式*/
 * {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 ul {
@@ -97,46 +99,55 @@ ul {
   border: 1px solid #eaeaea;
   padding: 20px;
   
-  .header{
+  .header {
     color: #333;
     text-align: center;
     margin-bottom: 20px;
     margin-top: 10px;
     border-bottom: 1px #eee solid;
+    
     .title {
       font-size: 20px;
       font-weight: bold;
       text-align: center;
       margin-bottom: 20px;
     }
-    .info{
+    
+    .info {
       margin-bottom: 20px;
-      span{
+      
+      span {
         display: inline-block;
         vertical-align: middle;
       }
-      .view-count{
+      
+      .view-count {
         background: url("/assets/images/post/eye.png") center left no-repeat;
         text-indent: 20px;
       }
-      .date{
+      
+      .date {
         background: url("/assets/images/post/time.png") center left no-repeat;
         text-indent: 20px;
       }
-      .author{
+      
+      .author {
         background: url("/assets/images/post/user.png") center left no-repeat;
         text-indent: 20px;
       }
     }
-    .dot{
+    
+    .dot {
       font-size: 26px;
       height: 16px;
       line-height: 14px;
     }
   }
-  .content{
+  
+  .content {
     color: #666;
-    p{
+    
+    p {
       text-indent: 2em;
     }
   }
@@ -149,6 +160,7 @@ ul {
   width: 1200px;
   margin: 0 auto;
 }
+
 /*主页文章列表*/
 .post-list {
   width: 980px;
@@ -176,7 +188,7 @@ ul {
       }
       
       a.post-title {
-        display: block;
+        display: inline-block;
         color: #333;
         font-size: 20px;
         font-weight: bold;
@@ -201,23 +213,27 @@ ul {
         color: #333;
         font-size: 12px;
         text-align: right;
-        span{
+        
+        span {
           display: inline-block;
           vertical-align: middle;
           height: 16px;
           line-height: 16px;
           margin: 0;
           padding: 0;
-          &.post-tag-label{
+          
+          &.post-tag-label {
             width: 16px;
             background: url("/assets/images/post/tag.png") center left no-repeat;
           }
-          &.post-category-label{
+          
+          &.post-category-label {
             width: 16px;
             margin-left: 15px;
             background: url("/assets/images/post/category.png") center left no-repeat;
           }
-          &.post-data-label{
+          
+          &.post-data-label {
             width: 16px;
             margin-left: 15px;
             background: url("/assets/images/post/date.png") center left no-repeat;
@@ -227,6 +243,7 @@ ul {
     }
   }
 }
+
 /*侧边栏*/
 .sidebar-list {
   position: absolute;
@@ -312,4 +329,38 @@ ul {
     box-shadow: 0 5px 40px -1px rgba(2, 10, 18, 0.11);
   }
   
+}
+
+/*分页*/
+.post-pagination {
+  .pagination-box {
+    text-align: center;
+    
+    a, span {
+      display: inline-block;
+      vertical-align: middle;
+      height: 32px;
+      line-height: 32px;
+    }
+    
+    a.previous, span.previous, a.next, span.next {
+      color: #fff;
+      background: #0077ff;
+      border-radius: 5px;
+      width: 80px;
+      text-decoration: none;
+      text-align: center;
+      margin: 0 10px;
+    }
+    
+    span.previous, span.next {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+    }
+    
+    .page-number {
+    
+    }
+  }
 }
