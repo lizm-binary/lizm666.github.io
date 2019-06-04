@@ -258,3 +258,8 @@ ul {
     background: #ccc;
     color: #666;
     cursor: not-allowed; }
+
+.music-frame {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px; }
