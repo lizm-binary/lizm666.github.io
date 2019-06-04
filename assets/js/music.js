@@ -11,7 +11,7 @@
 var musicTag = document.getElementById('music-tag');
 if (musicTag) {
     var frame = document.createElement('iframe');
-    
+    musicTag.parentNode.insertBefore(frame, musicTag);
     frame.frameBorder = 0;
     frame.width = '100%';
     frame.height = 80;
@@ -26,6 +26,6 @@ if (musicTag) {
         var head = frame.contentWindow.document.getElementsByTagName('head')[0];
         head.appendChild(css);
         frame.contentWindow.document.getElementsByTagName('video')[0].loop = true;
-        musicTag.parentNode.insertBefore(frame, musicTag);
+        frame.style.display = 'block';
     };
 }
