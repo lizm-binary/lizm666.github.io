@@ -15,7 +15,7 @@ if (musicTag) {
     frame.frameBorder = 0;
     frame.width = '100%';
     frame.height = 80;
-    frame.style.marginTop = '-19px';
+    //frame.style.marginTop = '-19px';
     frame.style.marginBottom = '10px';
     frame.style.display = 'none';
     frame.src = '/assets/music/' + musicTag.value;
