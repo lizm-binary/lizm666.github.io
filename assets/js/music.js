@@ -11,12 +11,13 @@
 var musicTag = document.getElementById('music-tag');
 if (musicTag) {
     var frame = document.createElement('iframe');
-    musicTag.parentNode.insertBefore(frame, musicTag);
+    
     frame.frameBorder = 0;
     frame.width = '100%';
     frame.height = 80;
     frame.style.marginTop = '-19px';
     frame.style.marginBottom = '10px';
+    frame.style.display = 'none';
     frame.src = '/assets/music/' + musicTag.value;
     frame.onload = function () {
         var css = frame.contentWindow.document.createElement('link');
@@ -25,5 +26,6 @@ if (musicTag) {
         var head = frame.contentWindow.document.getElementsByTagName('head')[0];
         head.appendChild(css);
         frame.contentWindow.document.getElementsByTagName('video')[0].loop = true;
+        musicTag.parentNode.insertBefore(frame, musicTag);
     };
 }
