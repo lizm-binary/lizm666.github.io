@@ -4,8 +4,10 @@ html,body{
     padding: 0;
     width:100%;
     height:100%;
+    overflow: hidden;
     background: #fff;
 }
 video{
     width: 100%;
+    height: 80px;
 }
