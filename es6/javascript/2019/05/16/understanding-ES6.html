@@ -417,11 +417,120 @@
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">endIndex</span><span class="p">);</span>   <span class="c1">// 3</span>
 </code></pre></div>    </div>
   </li>
+  <li>
+    <p>混合解构可以帮助你从数据节点中快速提取想要的信息，比如从JSON配置提取，不需要遍历整个结构。</p>
+  </li>
 </ul>
 
-<p><br />   <br />
-<br /> 
-第一篇先到这儿。</p>
+<p>（5）解构参数</p>
+
+<ul>
+  <li>
+    <p>当定义一个接受大量参数的js函数时，我们通常会创建一个可选对象，将额外的参数定义为这个对象的属性：</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span> <span class="o">||</span> <span class="p">{};</span>
+    <span class="kd">let</span> <span class="nx">secure</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">secure</span><span class="p">,</span>
+        <span class="nx">path</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span>
+        <span class="nx">domain</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">domain</span><span class="p">,</span>
+        <span class="nx">expires</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">expires</span><span class="p">;</span>
+    
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+      
+<span class="c1">// 第三个参数映射到options中</span>
+<span class="nx">setCookie</span><span class="p">(</span><span class="s1">'type'</span><span class="p">,</span><span class="s1">'js'</span><span class="p">,{</span>
+    <span class="na">secure</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">expires</span><span class="p">:</span> <span class="mi">60000</span>
+<span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>这种写法存在的问题是，仅查看函数的声明部分，无法辨识函数的预期参数，必须阅读函数体才能确定所有参数。</p>
+  </li>
+  <li>
+    <p>将options定义为解构参数，就能清晰地通过函数声明看出参数是哪些。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,</span> <span class="p">{</span><span class="nx">secure</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">domain</span><span class="p">,</span> <span class="nx">expires</span><span class="p">})</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+
+<span class="nx">setCookie</span><span class="p">(</span><span class="s1">'type'</span><span class="p">,</span><span class="s1">'js'</span><span class="p">,{</span>
+    <span class="na">secure</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">expires</span><span class="p">:</span> <span class="mi">60000</span>
+<span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>如果调用函数时不提供被解构的参数会报错，上诉代码等价于下面这段代码</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="p">{</span><span class="nx">secure</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">domain</span><span class="p">,</span> <span class="nx">expires</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span><span class="p">;</span>
+    <span class="c1">// 设置cookie的代码 </span>
+<span class="p">}</span>
+     
+<span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">);</span> <span class="c1">// 程序报错</span>
+
+<span class="c1">// 如果解构参数是必须的，那就不用担心这些问题，但是如果希望解构参数是非必须，需要提供默认参数</span>
+<span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,</span> <span class="p">{</span><span class="nx">secure</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">domain</span><span class="p">,</span> <span class="nx">expires</span><span class="p">}</span> <span class="o">=</span> <span class="p">{}</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码 </span>
+<span class="p">}</span>     
+     
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>解构参数的默认值</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     
+<span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,{</span>
+    <span class="nx">secure</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">path</span> <span class="o">=</span> <span class="s1">'/'</span><span class="p">,</span>
+    <span class="nx">domain</span> <span class="o">=</span> <span class="s1">'example.com'</span><span class="p">,</span>
+    <span class="nx">expires</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">36000000</span><span class="p">)</span>
+<span class="p">})</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+   
+<span class="c1">// 这样写的话函数声明变得很复杂了，并且如果当结构参数是非必须时，仍然需要写一个默认值，如下</span>
+
+<span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,{</span>
+    <span class="nx">secure</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">path</span> <span class="o">=</span> <span class="s1">'/'</span><span class="p">,</span>
+    <span class="nx">domain</span> <span class="o">=</span> <span class="s1">'example.com'</span><span class="p">,</span>
+    <span class="nx">expires</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">36000000</span><span class="p">)</span>
+<span class="p">}</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">secure</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">path</span> <span class="p">:</span> <span class="s1">'/'</span><span class="p">,</span>
+    <span class="na">domain</span> <span class="p">:</span> <span class="s1">'example.com'</span><span class="p">,</span>
+    <span class="na">expires</span> <span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">36000000</span><span class="p">)</span>    
+<span class="p">})</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+
+<span class="c1">// 这样仍然会产生较多的冗余代码，可以将默认值提取到一个独立的配置中，然后使用该对象作为解构和默认参数的一部分</span>
+     
+<span class="kd">const</span> <span class="nx">setCookieDefaults</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">secure</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">path</span> <span class="p">:</span> <span class="s1">'/'</span><span class="p">,</span>
+    <span class="na">domain</span> <span class="p">:</span> <span class="s1">'example.com'</span><span class="p">,</span>
+    <span class="na">expires</span> <span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">36000000</span><span class="p">)</span>    
+<span class="p">};</span>
+<span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,{</span>
+    <span class="nx">secure</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">.</span><span class="nx">secure</span><span class="p">,</span>
+    <span class="nx">path</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span>
+    <span class="nx">domain</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">.</span><span class="nx">domain</span><span class="p">,</span>
+    <span class="nx">expires</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">.</span><span class="nx">expires</span>
+<span class="p">}</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+
+<span class="c1">// 这样在需要修改参数的默认值时会很方便，只需要修改 setCookieDefaults 即可。</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p><br /> 
+下一篇总结一下Symbol，Iterator和Generator、class和Promise。</p>
 </div>
     </div>
     <div class="sidebar-list">
