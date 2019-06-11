@@ -1,5 +1,645 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-06-04T14:18:17+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">深入理解ES6（一）</title><link href="http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6.html" rel="alternate" type="text/html" title="深入理解ES6（一）" /><published>2019-05-16T21:19:04+08:00</published><updated>2019-05-16T21:19:04+08:00</updated><id>http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6</id><content type="html" xml:base="http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6.html">&lt;p&gt;&lt;input type=&quot;hidden&quot; class=&quot;hidden&quot; id=&quot;music-tag&quot; value=&quot;suiyueshentou.m4a,岁月神偷-金玟岐&quot; /&gt;
-ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭头函数，尾调用优化，解构。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-06-11T15:34:15+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">webpack 配置详解</title><link href="http://localhost:4000/webpack/2019/06/06/webpack-config.html" rel="alternate" type="text/html" title="webpack 配置详解" /><published>2019-06-06T10:07:31+08:00</published><updated>2019-06-06T10:07:31+08:00</updated><id>http://localhost:4000/webpack/2019/06/06/webpack-config</id><content type="html" xml:base="http://localhost:4000/webpack/2019/06/06/webpack-config.html">&lt;p&gt;基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。&lt;/p&gt;
+
+&lt;h3&gt;1. webpack配置方式介绍&lt;/h3&gt;
+
+&lt;p&gt;webpack的配置方式有如下两种：&lt;/p&gt;
+
+&lt;p&gt;（1）通过一个JavaScript文件描述，通常命名为webpack.config.js&lt;/p&gt;
+
+&lt;p&gt;（2）执行webpack可执文件时，通过命令行传入参数，如 webpack–devtool source-map&lt;/p&gt;
+
+&lt;p&gt;实际项目中，这两种方式往往相互搭配使用，一般我们在不同的js文件中描述好不同的配置，例如webpack-dev.config.js描述了开发配置，然后通过命令执行webpack时指定使用该配置文件：webpack–config webpack-dev.config.js&lt;/p&gt;
+
+&lt;p&gt;按照配置方式来划分，可以分为：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;只能通过命令行参数传入的选项，这种最为少见；&lt;/li&gt;
+  &lt;li&gt;只能通过配置文件配置的选项；&lt;/li&gt;
+  &lt;li&gt;通过两种方式都能配置的选项。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;按照配置所影响的功能来划分，可分为如下内容：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Entry： 配置模块的入口；&lt;/li&gt;
+  &lt;li&gt;Output: 配置如何输出最终想要的代码；&lt;/li&gt;
+  &lt;li&gt;Module: 配置处理模块的规则；&lt;/li&gt;
+  &lt;li&gt;Resolve: 配置寻找模块的规则；&lt;/li&gt;
+  &lt;li&gt;Plugins: 配置扩展插件；&lt;/li&gt;
+  &lt;li&gt;DevServer: 配置DevServer；&lt;/li&gt;
+  &lt;li&gt;其他配置项：其他零散的配置项；&lt;/li&gt;
+  &lt;li&gt;整体配置解构：整体地描述各项配置的结构；&lt;/li&gt;
+  &lt;li&gt;多种配置类型：配置文件不止可以返回一个Object，还可以返回其他形式；&lt;/li&gt;
+  &lt;li&gt;配置总结：寻找配置webpack的规律，减少思维负担。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;2. 配置实例详解&lt;/h3&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+   &lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * webpack 在寻找相对路径的文件时都会以context为根目录，context默认为执行启动webpack时所在的当前工作目录，可以按照如下方式修改：
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'app'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+       
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * entry配置了模块的入口，webpack构建的第一步就是从入口搜寻并递归所有的依赖模块
+       * entry配置必填，否则webpack报错
+       * entryp配置可以是以下类型：
+       * string------'./app/main.js'-------入口模块的文件路径，可以是相对路径（只有1个入口，入口只有1个文件）
+       * array ------['./app/vender.js','./app/main.js']-------入口模块的文件路径，可以是相对路径（只有1个入口，入口有2个文件）
+       * object------{
+       *                 a:'./app/main.js',
+       *                 b:['./app/tools.js','./app/app.js']
+       *             }---------有2个入口
+       * 如果是array，则搭配 output.library 配置使用时，只有数组里的最后一个入口文件的模块会被导出。
+       * 
+       * 假如项目里面有多个页面需要为每个页面入口配置一个entry，但是这些页面的数量不是固定的，可能会不断增加，那么entry配置不能写成静态的，
+       * 这时可以将entry使用函数来描述：
+       * 
+       * // 同步函数
+       * entry:()=&amp;gt;{
+       *     return {
+       *         a:'./pages/a',
+       *         b:'./pages/b',
+       *     }
+       * }
+       * 
+       * // 异步
+       * entry:()=&amp;gt;{
+       *     return new Promise((resolve)=&amp;gt;{
+       *         resolve({
+       *             a:'./pages/a',
+       *             b:'./pages/b',
+       *         })
+       *     })
+       * }
+       * 
+       * webpack会为每个生成的Chunk取一个名称，
+       * 如果entry是string或者array，只会生成一个名称是main的Chunk
+       * 如果entry是object，则可能生成多个Chunk，这时每个Chunk的名称就是object的key名称
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'./app/main.js'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+       
+       
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 在webpack经过一系列处理之后，配置如何输出最终想要的代码
+       * 
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 类型：string
+           * 配置输出文件的名称
+           * 如果只有一个输出文件，那么可以直接写死
+           * 当entry配置是object，需要输出多个Chunk时，就需要用模板和变量来配置，如下：
+           * filename:'[name].js'
+           * [name]表示使用内置的name去地替换[name],可以理解为每个Chunk都会通过这样一个字符串模板函数去生成输出文件的名称
+           *
+           * 内置变量除了name还有其他的：
+           * id: Chunk的唯一标识，从0 开始
+           * name: Chunk的名称
+           * hash：Chunk唯一标识的Hash值
+           * chunkhash：Chunk内容的Hash值
+           * 
+           * 其中hash和chunkhash是可以指定长度的，[hash:8]代表取8位的hash值，默认是20位
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'bundle.js'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置无入口的Chunk在运行时输出的文件名称，也可以叫附加Chunk文件的名称
+           * 支持和filename一样的内置变量
+           * 一般只在一些特定的场景才会在运行时生成Chunk，比如使用CommonChunkPlugin或者import('path/to/module')动态加载等
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;chunkFilename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'[id].js'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置输出文件存放的路径，必须是string，且是绝对路径，通常使用Node.js的path模块来处理
+           * 仅支持内置变量 hash
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'dist_[hash]'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置需要使用线上资源的URL前缀，或者叫上下文，有些项目可能会构建出一些公共模块，预先放到CDN服务器上，然后在代码中异步加载。
+           * 这个时候就可能需要配置publicPath指定线上资源的地址
+           * 类型为string，默认是空字符串''，即使用相对路径。
+           * 要谨慎使用该配置，容易导致资源加载出现404错误。
+           * 仅支持内置变量 hash
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;publicPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'https://cdn.example.com/assets/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 是否在生成的代码里写入有用的文件路径信息，为boolean类型，默认是true
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;pathinfo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * webpack输出的代码块有时可能需要异步加载，一般是通过jsonp动态插入一个script标签去加载跨域资源的，这时候需要在script标签上
+           * 配置crossorigin属性，crossorigin属性有两个值：
+           * anonymous（默认）：在加载此脚本时不会带上用户的cookie
+           * use-credentials：在加载此脚本时带上用户的cookie
+           * 通常设置crossorigin来获取异步加载的脚本执行时的详细错误信息
+           * crossOriginLoading:'anonymous'
+           * crossOriginLoading:'use-credentials'
+           * crossOriginLoading:false
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;crossOriginLoading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * jsonp异步加载资源时的回调函数名，需要和服务端配合使用，为string类型
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;jsonpFunction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'myWebpackJsonp'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置生成的 Source Map 文件的名称
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;sourceMapFilename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'[file].map'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 浏览器开发者工具里显示的源码模块名称
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;devtoolModuleFilenameTemplate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'webpack:///[resource-path]'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 当使用webpack去构建一个可以被其他模块导入使用的库时，需要配置library和libraryTarget
+           * library指定导出库的名称，类型为string
+           * 如果不填，默认的输出格式是匿名立即执行函数（闭包）
+           * 
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'myLib'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 导出库的类型，为枚举类型，可以是：umd,umd2,commonjs2,commonjs,amd,var,this,assign,window,global,jsonp
+           * 默认是var
+           * 参数类型为字符串
+           * 如果是var，库函数使用如下代码：
+           * var myLib = lb_code;
+           * myLib.doSomething();
+           * 如果output.library的值为空，那么库代码直接输出 lb_code
+           * 注：lb_code指的是库代码，它应该是一个有返回值的自执行函数。
+           * 其他类型的库代码赋值原理以此类推，比如commonjs，则是将库代码以CommonJs规范导出，this、window、global分别是将库代码
+           * 绑定到对应的作用域下。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;libraryTarget&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'var'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置要导出的模块中，哪些子模块需要被导出，只有当output.libraryTarget配置成commonjs或commonjs2时才有意义。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;libraryExport&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            
+       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 配置模块的处理规则
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置模块的读取和解析规则，通常用来配置 Loader，类型为数组，数组的每一项分别描述了某一部分文件应该被如何处理。
+           * 一条rules配置一般包含如下描述：
+           * 1. test： 通过使用正则匹配文件后缀来命中相应的文件
+           * 2. include：指定文件夹，只有改文件夹内的文件才会被解析，可以是单个路径字符串，也可以是一组路径
+           * 3. exclude：指定某些文件夹内的文件不被这条规则解析，可以是单个路径字符串，也可以是一组路径
+           * 4. use: 配置具体使用的 Loader，可以是单个，也可以是一组，每个 Loader 可以传递额外的参数
+           * 5. 调整 Loader 执行顺序，如果配置了一组 Loader，默认是从右到做执行，也可以使用 enforce 来调整某个 Loader 是第一个执行
+           *    还是最后一个执行。
+           * 
+           * 每个Loader都可以通过URL querystring的方式传入参数，具体请参照如下配置：
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;rules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;js$/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 命中javascript文件&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'src'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 指定只命中 src 目录内的js文件，加快webpack的搜索速度&lt;/span&gt;
+                   &lt;span class=&quot;cm&quot;&gt;/*
+                   * 使用 babel-loader 转换js文件
+                   * ?cacheDirectory 表示传给 babel-loader 的参数，用于缓存 babel 的编译结果，加快重新编译的速度
+                   * */&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'babel-loader?cacheDirectory'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;scss$/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 命中 scss 文件&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;exclude&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 排除 node_modules 和 bower_components 目录下的文件&lt;/span&gt;
+                       &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'node_modules'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                       &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'bower_components'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                   &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;  
+                   &lt;span class=&quot;cm&quot;&gt;/*
+                   * 使用一组 Loader 去处理 scss 文件
+                   * 处理的顺序为从右到左，sass-loader 最先处理，然后将结果交给 css-loader 处理，最后由 style-loader 处理。
+                   * 1. 通过 sass-loader 将SCSS源码转换成css代码，将css代码交给css-loader处理。
+                   * 2. css-loader 会找出import和url这样的导入语句，告诉webpack需要依赖这些资源，然后还可以配置CSS Modules，
+                   *    对css进行压缩等处理。处理完后交给style-loader。
+                   * 3. style-loader 将css代码转成字符串，然后注入到js代码中，通过js代码将样式写到DOM元素上。如果我们想将css代码
+                   *    提取成单独的css文件，可以使用ExtractTextPlugin 插件，后面会讲到。
+                   * */&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'style-loader'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'css-loader'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'sass-loader'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\.&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;jsx$/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                   &lt;span class=&quot;cm&quot;&gt;/*
+                   * 如果loader需要传递很多参数，可以通过一个object来描述loader的的配置
+                   * */&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;use&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;
+                       &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                           &lt;span class=&quot;na&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'babel-loader'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                           &lt;span class=&quot;na&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                               &lt;span class=&quot;na&quot;&gt;cacheDirectory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+                           &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+                           &lt;span class=&quot;cm&quot;&gt;/*
+                           * post 表示将该loader放在最后执行
+                           * pre 表示将该loader放在第一个执行
+                           * */&lt;/span&gt;
+                           &lt;span class=&quot;na&quot;&gt;enforce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'post'&lt;/span&gt;
+                       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                   &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+               
+           &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置webpack不需要处理的模块，主要是针对那些没有采用模块化标准的文件，这样可以提高构建的性能，比如一些工具库，
+           * 如jQuery，ChartJS等，去解析这些庞大的文件耗时且没有意义。
+           * noParse的配置只能精确到文件
+           * 类型是 RegExp、[RegExp]、function 之一，如：
+           * noParse: /jquery|chartjs/
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;noParse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+               &lt;span class=&quot;c1&quot;&gt;// content 代表一个模块文件路径&lt;/span&gt;
+               &lt;span class=&quot;c1&quot;&gt;// 返回 true 或 false&lt;/span&gt;
+               &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/jquery|chartjs/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 因为webpack是以模块化的js文件作为入口的，所以内置了对模块化js的解析功能，支持AMD,CommonJS，SystemJS，ES6。
+           * parse属性可以更细粒度地配置哪些模块语法被解析，哪些不被解析。parse配置可以精确到语法层面。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;amd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用AMD&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;commonjs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用 CommonJS&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用 SystemJS&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;harmony&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用 ES6 import/export&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;requireInclude&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用 require.include&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;requireEnsure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用 require.ensure&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;requireContext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用 require.context&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;browserify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用 browserify&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;requireJs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 禁用 requirejs&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 配置webpack如何寻找模块所对应的文件。
+       * webpack内置js模块化语法解析功能，默认采用模块化标准里约定的规则去寻找，也可以自定义修改
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 别名配置，通过别名将原路径映射成一个新的导入路径
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+               &lt;span class=&quot;cm&quot;&gt;/*
+               * 当通过import Button from 'components/button'导入时，
+               * 会被alias替换成 import Button from './src/components/button'
+               * 这样做可能会命中太多的导入语句
+               * */&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;components&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'./src/components/'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+               &lt;span class=&quot;cm&quot;&gt;/*
+               * 可以通过$符号来缩小范围，只命中已关键字结尾的导入语句
+               * 下面的配置只会命中以react结尾的导入语句，即只会将 import 'react' 换成 import '/path/to/react.min.js'
+               * */&lt;/span&gt;
+               &lt;span class=&quot;s1&quot;&gt;'react$'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/path/to/react.min.js'&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 通过一个object来描述更详细的配置
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'module'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 老模块&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'new-module'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 新模块&lt;/span&gt;
+                   &lt;span class=&quot;cm&quot;&gt;/*
+                   * 是否只映射模块，如果是true，则只有'module'会被映射，如果是false，则'module/inner/path'也会被映射
+                   * */&lt;/span&gt;
+                   &lt;span class=&quot;na&quot;&gt;onlyModule&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 有些第三方模块会针对不同的环境提供几份代码，比如某个模块分别提供了采用ES5和ES6语法的两份代码，
+           * 这两份代码的位置写在模块的package.json配置文件中：
+           * {
+           *     &quot;jsnext:main&quot;:&quot;es/index.js&quot;,  // 采用ES6语法的代码入口文件
+           *     &quot;main&quot;:&quot;lib/index.js&quot; // 采用ES5语法的代码入口文件
+           * }
+           * webpack 会根据 mainFields 的配置决定优先采用哪份代码，mainFields默认配置为：
+           * mainFields: ['browser', 'main']
+           * webpack 会按照数组里的顺序在第三方模块的package.json文件里面寻找，只会使用第一个找到的文件。
+           * 如果我们想优先采用以ES6语法编写的入口文件，那么可以做如下配置：
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;mainFields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'jsnext:main'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'browser'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'main'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 当导入语句没有指明文件后缀时，webpack会按照resolve.extensions的配置去依次尝试寻找对应后缀的文件，默认配置是
+           * extensions: ['.js', '.json'],
+           * 从左到右寻找
+           * 也就是说当遇到 require('./data')语句时，webpack会先去找./data.js 文件，如果文件不存在，再继续找 ./data.json
+           * 文件，如果遍历完所有指定的文件后缀都没有找到对应的文件，就会报错。
+           * 
+           * 所以，为了加快构建速度，我们可以在写导入语句时，明确指定文件后缀。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;extensions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'.js'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置webpack去哪些目录下寻找第三方模块，默认是 node_modules
+           * 为数组类型
+           * 有时候我们项目里会有一些基础模块被其他模块大量依赖和导入，但是其他的模块位置不固定，所以就会出现各种层级的相对路径导入，
+           * 导致导入语句路径很长：import '../../../components/button',
+           * 可以在modules加入根目录配置 './src/components',那么导入语句就可以改成 import 'button'。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;modules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'./src/components'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'node_modules'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 是否跟随文件的软链接去搜寻模块的路径，为Boolean类型，默认 true
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;symlinks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 第三方模块的描述文件,默认均为 package.json
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;descriptionFiles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;' package.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置导入语句是不是都需要带后缀，如果配置成true，那么import './foo'会报错，必须写成 import './foo.js'
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;enforceExtension&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置node_modules 文件下里的导入语句是不是应该都需要带后缀，因为大多数第三方模块的导入语句都没有带文件后缀，
+           * 所以当 enforceExtension 设置成 true时，enforceModuleExtension应该设置成false，以兼容第三方模块。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;enforceModuleExtension&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;
+           
+       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 用于配置webpack的扩展功能，为数组类型，数组的每一项都是一个plugin实例，每个实例一般都是通过构造函数传入相应参数生成的。
+       * 一般在plugins里面配置js代码压缩，资源拷贝，css文件提取，happypack，公共代码提取等操作。
+       * plugin本身没有什么配置，主要是生成实例时的参数配置，需要根据不同的第三方插件的api说明来配置，以达到不同的目的。
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;plugins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+           &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;commonChunkPlugin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'common'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;chunks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'b'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 在实际开发过程中，我们往往需要：
+       * 1. 提供http服务而不是使用本地文件预览
+       * 2. 监听文件变化并自动刷新页面，做到实时预览
+       * 3. 支持Source Map，方便调试
+       * 
+       * webpack官方提供了devServer开发工具，devServer会启动一个http服务用于网页请求，还会启动webpack，并接收webpack发出的文件
+       * 变更信号，通过websocket协议自动刷新网页。
+       * 此时webpack构建出的文件被保存在内存中。
+       * 同时devServer可以通过Source Map 映射代码，让我们在源码上断点调试。
+       * 
+       * webpack本身不认识devServer的配置项，只有通过devServer启动webpack时，devServer的配置才会生效。
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;devServer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 是否开启热模块替换,devServer的默认行为是在发现源码被更新后自动刷新整个页面，开启hot配置后，只会更新改变的模块，不会
+           * 刷新整个页面。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;hot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * devServer的实时预览功能依赖一个注入页面里的代理客户端去接收来自devServer的命令并负责刷新页面的工作。
+           * inline用于配置是否将这个代理客户端自动注入将运行在页面中的chunk里，默认自动注入。
+           * devServer会根据是否开启inline配置来调整它的自动刷新策略。
+           * 如果开启inline，则devServer会在构建变化后的代码时通过代理客户端控制网页刷新
+           * 如果关闭inline，则devServer将无法直接控制要开发的网页。这时它会通过iframe的方式去运行要开发的网页。在构建变化后的代码
+           * 时，会通过刷新iframe来实现实时预览，但这时我们需要去 http://localhost:8080/webpack-dev-server/实时预览自己的网页。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;inline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置为true时，任何请求都会但会index.html文件，这只能用于只有一个html文件的单页应用。
+           * 且应用使用了HTML5 History API。
+           * historyApiFallback: true,
+           * 
+           * 如果我们的应用由多个页面组成，则需要devServer根据不同的请求返回不同的HTML文件，配置如下：
+           * 
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;historyApiFallback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;rewrites&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+                   &lt;span class=&quot;c1&quot;&gt;// 以user开的的都返回user.html&lt;/span&gt;
+                   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;user/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'user.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+                   &lt;span class=&quot;c1&quot;&gt;// 以game开头的都返回game.html&lt;/span&gt;
+                   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;game/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'game.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+                   &lt;span class=&quot;c1&quot;&gt;// 其他的都返回index.html&lt;/span&gt;
+                   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/./&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'index.html'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+               &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置devServer服务器的文件根目录，默认情况是当前的执行目录，通常就是项目的根目录，所以一般不需要设置这一项，
+           * 除非有额外的文件需要被devServer服务，比如想把根目录下的public目录设置成devServer服务器的文件根目录。
+           * devServer服务器通过HTTP服务暴露文件的方式分成两类：
+           * 1. 暴露本地文件
+           * 2. 暴露webpack构建出来的结果，由于构建出的结果交给了devServer，所以我们再使用devServer时，会在本地找不到构建出来的文件。
+           * 
+           * contentBase只能用来配置暴露本地文件的规则，设置成false可以关闭暴露本地文件。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;contentBase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'public'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * headers配置项可以在HTTP响应中配置一些HTTP响应头
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+               &lt;span class=&quot;s1&quot;&gt;'x-foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'bar'&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * ---- host ----
+           * 
+           * 配置devServer服务监听的地址，只能通过命令行传入，如果想让局域网内的其他设备访问自己本地的服务，可以在启动devS时带上参数
+           * --host 0.0.0.0
+           * host 的默认值是 127.0.0.0，只能本地访问devServer的HTTP服务。
+           * */&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置devServer服务监听的端口号，默认是8080，如果被占用可以改成其他的端口号
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'8081'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置一个白名单列表，只有HOST在列表里的HTTP请求才能正常返回
+           * 
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;allowedHosts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+               &lt;span class=&quot;s1&quot;&gt;'host.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+               &lt;span class=&quot;s1&quot;&gt;'sub.host.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+               &lt;span class=&quot;c1&quot;&gt;// 所有host2.com 和所有的子域名 *.host2.com 都将匹配&lt;/span&gt;
+               &lt;span class=&quot;s1&quot;&gt;'.host2.com'&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置是否关闭用于DNS重新绑定的HTTP请求的HOST检查
+           * devServer默认只接收来自本地的请求，关闭后就能接收来自任意HOST的请求，它通常和 --host 0.0.0.0 一起使用，因为其他设备访问时，
+           * 是通过IP访问而不是通过HOST 访问，所以需要关闭HOST检查。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;disbaleHostCheck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * devServer默认使用http服务，也可以配置成使用https服务,配置成 true 时，devServer会自动为我们生成一份 HTTPS 证书，如果
+           * 我们想使用自己的证书，也可以自定义配置证书信息：
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'path/to/server.key'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;cert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'path/to/server.cert'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+               &lt;span class=&quot;na&quot;&gt;ca&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'path/to/ca.pem'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置客户端的日志级别，这会影响到我们在浏览器控制台里看到的日志内容。为枚举类型字符串,可以是 none、error、warning、info。
+           * 默认 info，即输出所有类型的日志，设置成none则不输出任何日志。
+           * 
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;clintLogLevel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'info'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 是否启用Gzip压缩，默认false
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;compress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * devServer第一次构建完成后，是否自动使用默认浏览器打开要开发的网页
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * devServer第一次构建完成后，打开指定的网页，需要open设置成true
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;openPage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/index.html#login'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 配置代理到后端的服务接口
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;proxy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+               &lt;span class=&quot;s1&quot;&gt;'/api'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'http://localhost:3000'&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+           
+           
+       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 是否开启缓存来提高webpack的构建性能
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 是否捕捉webpack构建的性能信息，用于分析是什么原因导致构建性能不佳
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 配置webpack构建出来的代码在什么环境下运行，默认是在浏览器内运行，其他配置如下：
+       * web: 针对浏览器（默认），所有代码集中在一个文件里
+       * node: 针对Node.js，使用require语句加载 Chunk 代码
+       * async-node: 针对Node.js， 异步加载 Chunk 代码
+       * node-webkit: nw.js
+       * webworker: 针对 WebWorker
+       * electron-main: 针对 Electron 主线程 （http://electron.atom.io/）
+       * electron-renderer: 针对 Electron 渲染线程
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'web'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 配置webpack如何生成Source Map，默认值是false，即不生成 Source Map，如果想生成 Source Map方便调试，可以按照下面这样配置。
+       * 生成 Source Map需要消耗大量webpack构建性能。
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;devtool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'source-map'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 是否开启监听，在文件发生变化时自动重新编译，默认是关闭的，即false，在使用devServer时，默认是开启的。
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 详细配置监听模式
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;watchOptions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;// 不监听的文件或者文件夹，支持正则，默认为空&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;ignored&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/node_modules/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;// 监听到代码变化300ms后再去执行动作，截流，防止文件更新太快导致重新编译频率太高，默认 300ms&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;aggregateTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;300&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;// 判断文件是否发生变化，是通过不停地询问系统指定文件有没有变化实现的，默认每秒询问1000次&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;pool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 配置webpack在构建代码的过程中使用了哪些不需要被打包的模块，也就是说这些模块是外部提供的，webpack在打包时可以忽略它们。
+       * 有些js运行环境可能内置了一些全局变量或者模块，比如我们在在index.html中的head标签里引入了jquery
+       * &amp;lt;script src=&quot;path/to/jquery.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+       * 这时，全局变量jQuery就会被注入到网页的js运行环境里。
+       * 如果想要在模块化的源码里面使用jquery，需要 import $ from 'jquery'，但是在构建输出的Chunk里已经包含了jquery库的内容，
+       * 这导致jquery出现了两次，浪费加载流量，最好在Chunk里面不再包含jquery代码了。
+       * externals 就可以告诉webpack在js运行环境中已经内置了哪些全局变量，不需要将这些全局变量打包到代码中而是直接使用它们即可。
+       * 
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;externals&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;// 将导入语句里的jquery替换成运行环境里的全局变量jQuery&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;jquery&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'jQuery'&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 配置webpack如何去寻找Loader，因为在使用Loader时是通过其包名称去引用的，webpack需要根据配置的Loader包名称去找到相应的代码
+       * 来处理源文件。通常用来配置加载本地Loader
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;resolveLoader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;//去哪个目录下寻找Loader&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;modules&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'node_modules'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;//Loader的入口文件后缀&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;extensions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'.js'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;//指明入口文件位置的字段&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;mainFields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'loader'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'main'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 配置控制台输出webpack打包完成时输出的信息，详细配置查看api https://www.webpackjs.com/configuration/stats/
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;stats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;assets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 添加资源信息&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;colors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 使用不同颜色区分信息 等同于 webpack --colors&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 添加错误信息&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;errorDetails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 添加错误的详细信息（就像解析日志一样）&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// 添加 compilation 的哈希值&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+       
+       &lt;span class=&quot;cm&quot;&gt;/*
+       * 配置如何展示性能提示。例如，如果一个资源超过 250kb，webpack 会对此输出一个警告来通知你。
+       * */&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;performance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           &lt;span class=&quot;cm&quot;&gt;/*
+           * 打开或关闭提示，默认值为 'warning', 可选值有false，'error' ， 'warning'。
+           * 生产环境构建时，推荐使用'error'，有助于防止把体积巨大的 bundle 部署到生产环境，从而影响网页的性能。
+           * */&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;hints&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'warning'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;// 资源(asset)是从 webpack 生成的任何文件，此选项限制了单个资源体积的大小，超过则会给出性能提示，默认值是 250000 (bytes)。&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;maxAssetSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;// 限制入口文件的大小，默认是 250000 (bytes)。&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;maxEntrypointSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+           &lt;span class=&quot;c1&quot;&gt;// 过滤需要检查的文件&lt;/span&gt;
+           &lt;span class=&quot;na&quot;&gt;assetFilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;assetFilename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+               &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;assetFilename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;endsWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'.css'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;assetFilename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;endsWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'.js'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+           &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+       
+   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这一篇内容算是比较全面的webpack配置讲解了，更详细的的配置可以参考官网api。&lt;/p&gt;
+
+&lt;p&gt;后面再写一篇，介绍下一般在项目中是如何将配置划分到不同的配置文件，比如webpack.base.conf.js、webpack.dev.conf.js、webpack.prod.conf.js等。&lt;/p&gt;
+
+&lt;p&gt;然后再写一写一般如何做webpack构建配置优化。&lt;/p&gt;</content><author><name>lizm</name></author><category term="webpack" /><summary type="html">基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。</summary></entry><entry><title type="html">深入理解ES6（一）</title><link href="http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6.html" rel="alternate" type="text/html" title="深入理解ES6（一）" /><published>2019-05-16T21:19:04+08:00</published><updated>2019-05-16T21:19:04+08:00</updated><id>http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6</id><content type="html" xml:base="http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6.html">&lt;p&gt;ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭头函数，尾调用优化，解构。&lt;/p&gt;
 
 &lt;h3&gt;1. 临时死区&lt;/h3&gt;
 
@@ -363,7 +1003,7 @@ ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭�
 &lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2019-05-05T13:07:41+08:00</published><updated>2019-05-05T13:07:41+08:00</updated><id>http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry><entry><title type="html">I Have a Dream</title><link href="http://localhost:4000/martin/1963/08/28/I-Have-a-Dream.html" rel="alternate" type="text/html" title="I Have a Dream" /><published>1963-08-28T18:18:00+08:00</published><updated>1963-08-28T18:18:00+08:00</updated><id>http://localhost:4000/martin/1963/08/28/I%20Have%20a%20Dream</id><content type="html" xml:base="http://localhost:4000/martin/1963/08/28/I-Have-a-Dream.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
 
 &lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
 
@@ -375,34 +1015,4 @@ ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭�
 &lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2019-05-05T13:07:41+08:00</published><updated>2019-05-05T13:07:41+08:00</updated><id>http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
-
-&lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
-
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry><entry><title type="html">我的第一篇博客</title><link href="http://localhost:4000/blog/travel/2019/04/06/welcome-to-jekyll.html" rel="alternate" type="text/html" title="我的第一篇博客" /><published>2019-04-06T13:07:41+08:00</published><updated>2019-04-06T13:07:41+08:00</updated><id>http://localhost:4000/blog/travel/2019/04/06/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/blog/travel/2019/04/06/welcome-to-jekyll.html">Excerpt with multiple paragraphs
-
-Here's another paragraph in the excerpt.
-&lt;!--more--&gt;
-Out-of-excerpt
-
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
-
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
-
-Jekyll also offers powerful support for code snippets:
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].</content><author><name>lizm</name></author><category term="hot" /><category term="summer" /><summary type="html">Excerpt with multiple paragraphs Here's another paragraph in the excerpt.</summary></entry></feed>
+&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name>martin</name></author><category term="speeches" /><summary type="html">I am happy to join with you today in what will go down in history as the greatest demonstration for freedom in the history of our nation.</summary></entry></feed>

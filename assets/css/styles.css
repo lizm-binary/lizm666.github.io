@@ -259,7 +259,11 @@ ul {
     color: #666;
     cursor: not-allowed; }
 
-.music-frame {
-  width: 100%;
-  height: 100px;
-  margin-bottom: 10px; }
+.music-box {
+  margin-bottom: 20px; }
+  .music-box .music-name-author {
+    text-indent: 20px;
+    margin-bottom: 15px; }
+  .music-box video {
+    width: 100%;
+    height: 55px; }

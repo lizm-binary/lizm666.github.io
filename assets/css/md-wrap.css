@@ -2,6 +2,10 @@
 .post-content {
 
 }
+.post-content span.c1,
+.post-content span.cm {
+    color: green;
+}
 
 .post-content p {
     text-indent: 0 !important;
