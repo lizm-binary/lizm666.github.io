@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>webpack 配置详解</title>
+    <link rel="stylesheet" href="/lib/animate.css/animate.css">
+    <link rel="stylesheet" href="/assets/css/md-wrap.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+
+<div class="nav">
+    <ul>
+        
+        <li><a href="/" >Home</a></li>
+        
+        <li><a href="/about.html" >About</a></li>
+        
+    </ul>
+</div>
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>Title</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+
+
+<script src=""></script>
+</body>
+
+<div class="container">
+    <div class="post bounceInUp animated">
+        <div class="header">
+            <div class="title">webpack 配置详解</div>
+            <div class="info">
+                <span class="view-count">9812</span>
+                <span class="dot">·</span>
+                <span class="date">2019-06-11</span>
+                <span class="dot">·</span>
+                <span class="author">lizm</span>
+            </div>
+        </div>
+        
+<div class="music-box">
+    <div class="music-name-author">
+        ♬：<span>来自天堂的魔鬼-邓紫棋</span>
+    </div>
+    <video controls="" autoplay="" name="media" loop="">
+        <source src="http://127.0.0.1:4000/assets/music/laizitiantangdemogui.m4a" type="audio/mp4">
+    </video>
+</div>
+
+        <div class="content post-content"><p>基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。</p>
+
+<h3>1. webpack配置方式介绍</h3>
+
+<p>webpack的配置方式有如下两种：</p>
+
+<p>（1）通过一个JavaScript文件描述，通常命名为webpack.config.js</p>
+
+<p>（2）执行webpack可执文件时，通过命令行传入参数，如 webpack–devtool source-map</p>
+
+<p>实际项目中，这两种方式往往相互搭配使用，一般我们在不同的js文件中描述好不同的配置，例如webpack-dev.config.js描述了开发配置，然后通过命令执行webpack时指定使用该配置文件：webpack–config webpack-dev.config.js</p>
+
+<p>按照配置方式来划分，可以分为：</p>
+
+<ul>
+  <li>只能通过命令行参数传入的选项，这种最为少见；</li>
+  <li>只能通过配置文件配置的选项；</li>
+  <li>通过两种方式都能配置的选项。</li>
+</ul>
+
+<p>按照配置所影响的功能来划分，可分为如下内容：</p>
+
+<ul>
+  <li>Entry： 配置模块的入口；</li>
+  <li>Output: 配置如何输出最终想要的代码；</li>
+  <li>Module: 配置处理模块的规则；</li>
+  <li>Resolve: 配置寻找模块的规则；</li>
+  <li>Plugins: 配置扩展插件；</li>
+  <li>DevServer: 配置DevServer；</li>
+  <li>其他配置项：其他零散的配置项；</li>
+  <li>整体配置解构：整体地描述各项配置的结构；</li>
+  <li>多种配置类型：配置文件不止可以返回一个Object，还可以返回其他形式；</li>
+  <li>配置总结：寻找配置webpack的规律，减少思维负担。</li>
+</ul>
+
+<h3>2. 配置实例详解</h3>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="kd">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'path'</span><span class="p">);</span>
+
+   <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+       <span class="cm">/*
+       * webpack 在寻找相对路径的文件时都会以context为根目录，context默认为执行启动webpack时所在的当前工作目录，可以按照如下方式修改：
+       * */</span>
+       <span class="na">context</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="s1">'app'</span><span class="p">),</span>
+       
+       
+       <span class="cm">/*
+       * entry配置了模块的入口，webpack构建的第一步就是从入口搜寻并递归所有的依赖模块
+       * entry配置必填，否则webpack报错
+       * entryp配置可以是以下类型：
+       * string------'./app/main.js'-------入口模块的文件路径，可以是相对路径（只有1个入口，入口只有1个文件）
+       * array ------['./app/vender.js','./app/main.js']-------入口模块的文件路径，可以是相对路径（只有1个入口，入口有2个文件）
+       * object------{
+       *                 a:'./app/main.js',
+       *                 b:['./app/tools.js','./app/app.js']
+       *             }---------有2个入口
+       * 如果是array，则搭配 output.library 配置使用时，只有数组里的最后一个入口文件的模块会被导出。
+       * 
+       * 假如项目里面有多个页面需要为每个页面入口配置一个entry，但是这些页面的数量不是固定的，可能会不断增加，那么entry配置不能写成静态的，
+       * 这时可以将entry使用函数来描述：
+       * 
+       * // 同步函数
+       * entry:()=&gt;{
+       *     return {
+       *         a:'./pages/a',
+       *         b:'./pages/b',
+       *     }
+       * }
+       * 
+       * // 异步
+       * entry:()=&gt;{
+       *     return new Promise((resolve)=&gt;{
+       *         resolve({
+       *             a:'./pages/a',
+       *             b:'./pages/b',
+       *         })
+       *     })
+       * }
+       * 
+       * webpack会为每个生成的Chunk取一个名称，
+       * 如果entry是string或者array，只会生成一个名称是main的Chunk
+       * 如果entry是object，则可能生成多个Chunk，这时每个Chunk的名称就是object的key名称
+       * */</span>
+       <span class="na">entry</span><span class="p">:</span> <span class="s1">'./app/main.js'</span><span class="p">,</span>
+       
+       
+       
+       <span class="cm">/*
+       * 在webpack经过一系列处理之后，配置如何输出最终想要的代码
+       * 
+       * */</span>
+       <span class="na">output</span><span class="p">:{</span>
+           <span class="cm">/*
+           * 类型：string
+           * 配置输出文件的名称
+           * 如果只有一个输出文件，那么可以直接写死
+           * 当entry配置是object，需要输出多个Chunk时，就需要用模板和变量来配置，如下：
+           * filename:'[name].js'
+           * [name]表示使用内置的name去地替换[name],可以理解为每个Chunk都会通过这样一个字符串模板函数去生成输出文件的名称
+           *
+           * 内置变量除了name还有其他的：
+           * id: Chunk的唯一标识，从0 开始
+           * name: Chunk的名称
+           * hash：Chunk唯一标识的Hash值
+           * chunkhash：Chunk内容的Hash值
+           * 
+           * 其中hash和chunkhash是可以指定长度的，[hash:8]代表取8位的hash值，默认是20位
+           * */</span>
+           <span class="na">filename</span><span class="p">:</span><span class="s1">'bundle.js'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 配置无入口的Chunk在运行时输出的文件名称，也可以叫附加Chunk文件的名称
+           * 支持和filename一样的内置变量
+           * 一般只在一些特定的场景才会在运行时生成Chunk，比如使用CommonChunkPlugin或者import('path/to/module')动态加载等
+           * */</span>
+           <span class="na">chunkFilename</span><span class="p">:</span><span class="s1">'[id].js'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 配置输出文件存放的路径，必须是string，且是绝对路径，通常使用Node.js的path模块来处理
+           * 仅支持内置变量 hash
+           * */</span>
+           <span class="na">path</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="s1">'dist_[hash]'</span><span class="p">),</span>
+           
+           <span class="cm">/*
+           * 配置需要使用线上资源的URL前缀，或者叫上下文，有些项目可能会构建出一些公共模块，预先放到CDN服务器上，然后在代码中异步加载。
+           * 这个时候就可能需要配置publicPath指定线上资源的地址
+           * 类型为string，默认是空字符串''，即使用相对路径。
+           * 要谨慎使用该配置，容易导致资源加载出现404错误。
+           * 仅支持内置变量 hash
+           * */</span>
+           <span class="na">publicPath</span><span class="p">:</span><span class="s1">'https://cdn.example.com/assets/'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 是否在生成的代码里写入有用的文件路径信息，为boolean类型，默认是true
+           * */</span>
+           <span class="na">pathinfo</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * webpack输出的代码块有时可能需要异步加载，一般是通过jsonp动态插入一个script标签去加载跨域资源的，这时候需要在script标签上
+           * 配置crossorigin属性，crossorigin属性有两个值：
+           * anonymous（默认）：在加载此脚本时不会带上用户的cookie
+           * use-credentials：在加载此脚本时带上用户的cookie
+           * 通常设置crossorigin来获取异步加载的脚本执行时的详细错误信息
+           * crossOriginLoading:'anonymous'
+           * crossOriginLoading:'use-credentials'
+           * crossOriginLoading:false
+           * */</span>
+           <span class="na">crossOriginLoading</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * jsonp异步加载资源时的回调函数名，需要和服务端配合使用，为string类型
+           * */</span>
+           <span class="na">jsonpFunction</span><span class="p">:</span> <span class="s1">'myWebpackJsonp'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 配置生成的 Source Map 文件的名称
+           * */</span>
+           <span class="na">sourceMapFilename</span><span class="p">:</span> <span class="s1">'[file].map'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 浏览器开发者工具里显示的源码模块名称
+           * */</span>
+           <span class="na">devtoolModuleFilenameTemplate</span><span class="p">:</span> <span class="s1">'webpack:///[resource-path]'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 当使用webpack去构建一个可以被其他模块导入使用的库时，需要配置library和libraryTarget
+           * library指定导出库的名称，类型为string
+           * 如果不填，默认的输出格式是匿名立即执行函数（闭包）
+           * 
+           * */</span>
+           <span class="na">library</span><span class="p">:</span><span class="s1">'myLib'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 导出库的类型，为枚举类型，可以是：umd,umd2,commonjs2,commonjs,amd,var,this,assign,window,global,jsonp
+           * 默认是var
+           * 参数类型为字符串
+           * 如果是var，库函数使用如下代码：
+           * var myLib = lb_code;
+           * myLib.doSomething();
+           * 如果output.library的值为空，那么库代码直接输出 lb_code
+           * 注：lb_code指的是库代码，它应该是一个有返回值的自执行函数。
+           * 其他类型的库代码赋值原理以此类推，比如commonjs，则是将库代码以CommonJs规范导出，this、window、global分别是将库代码
+           * 绑定到对应的作用域下。
+           * */</span>
+           <span class="na">libraryTarget</span><span class="p">:</span><span class="s1">'var'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 配置要导出的模块中，哪些子模块需要被导出，只有当output.libraryTarget配置成commonjs或commonjs2时才有意义。
+           * */</span>
+           <span class="na">libraryExport</span><span class="p">:</span><span class="s1">''</span><span class="p">,</span>
+            
+       <span class="p">},</span>
+       
+       <span class="cm">/*
+       * 配置模块的处理规则
+       * */</span>
+       <span class="na">module</span><span class="p">:</span> <span class="p">{</span>
+           
+           <span class="cm">/*
+           * 配置模块的读取和解析规则，通常用来配置 Loader，类型为数组，数组的每一项分别描述了某一部分文件应该被如何处理。
+           * 一条rules配置一般包含如下描述：
+           * 1. test： 通过使用正则匹配文件后缀来命中相应的文件
+           * 2. include：指定文件夹，只有改文件夹内的文件才会被解析，可以是单个路径字符串，也可以是一组路径
+           * 3. exclude：指定某些文件夹内的文件不被这条规则解析，可以是单个路径字符串，也可以是一组路径
+           * 4. use: 配置具体使用的 Loader，可以是单个，也可以是一组，每个 Loader 可以传递额外的参数
+           * 5. 调整 Loader 执行顺序，如果配置了一组 Loader，默认是从右到做执行，也可以使用 enforce 来调整某个 Loader 是第一个执行
+           *    还是最后一个执行。
+           * 
+           * 每个Loader都可以通过URL querystring的方式传入参数，具体请参照如下配置：
+           * */</span>
+           <span class="na">rules</span><span class="p">:[</span>
+               <span class="p">{</span>
+                   <span class="na">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">\.</span><span class="sr">js$/</span><span class="p">,</span>  <span class="c1">// 命中javascript文件</span>
+                   <span class="na">include</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">'src'</span><span class="p">),</span> <span class="c1">// 指定只命中 src 目录内的js文件，加快webpack的搜索速度</span>
+                   <span class="cm">/*
+                   * 使用 babel-loader 转换js文件
+                   * ?cacheDirectory 表示传给 babel-loader 的参数，用于缓存 babel 的编译结果，加快重新编译的速度
+                   * */</span>
+                   <span class="na">use</span><span class="p">:[</span><span class="s1">'babel-loader?cacheDirectory'</span><span class="p">]</span>
+               <span class="p">},</span>
+               <span class="p">{</span>
+                   <span class="na">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">\.</span><span class="sr">scss$/</span><span class="p">,</span>  <span class="c1">// 命中 scss 文件</span>
+                   <span class="na">exclude</span><span class="p">:</span> <span class="p">[</span> <span class="c1">// 排除 node_modules 和 bower_components 目录下的文件</span>
+                       <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">'node_modules'</span><span class="p">),</span>
+                       <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">'bower_components'</span><span class="p">),</span>
+                   <span class="p">],</span>  
+                   <span class="cm">/*
+                   * 使用一组 Loader 去处理 scss 文件
+                   * 处理的顺序为从右到左，sass-loader 最先处理，然后将结果交给 css-loader 处理，最后由 style-loader 处理。
+                   * 1. 通过 sass-loader 将SCSS源码转换成css代码，将css代码交给css-loader处理。
+                   * 2. css-loader 会找出import和url这样的导入语句，告诉webpack需要依赖这些资源，然后还可以配置CSS Modules，
+                   *    对css进行压缩等处理。处理完后交给style-loader。
+                   * 3. style-loader 将css代码转成字符串，然后注入到js代码中，通过js代码将样式写到DOM元素上。如果我们想将css代码
+                   *    提取成单独的css文件，可以使用ExtractTextPlugin 插件，后面会讲到。
+                   * */</span>
+                   <span class="na">use</span><span class="p">:</span> <span class="p">[</span><span class="s1">'style-loader'</span><span class="p">,</span> <span class="s1">'css-loader'</span><span class="p">,</span> <span class="s1">'sass-loader'</span><span class="p">]</span>
+               <span class="p">},</span>
+               <span class="p">{</span>
+                   <span class="na">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">\.</span><span class="sr">jsx$/</span><span class="p">,</span>
+                   <span class="cm">/*
+                   * 如果loader需要传递很多参数，可以通过一个object来描述loader的的配置
+                   * */</span>
+                   <span class="na">use</span><span class="p">:[</span>
+                       <span class="p">{</span>
+                           <span class="na">loader</span><span class="p">:</span><span class="s1">'babel-loader'</span><span class="p">,</span>
+                           <span class="na">options</span><span class="p">:</span> <span class="p">{</span>
+                               <span class="na">cacheDirectory</span><span class="p">:</span><span class="kc">true</span>
+                           <span class="p">},</span>
+                           <span class="cm">/*
+                           * post 表示将该loader放在最后执行
+                           * pre 表示将该loader放在第一个执行
+                           * */</span>
+                           <span class="na">enforce</span><span class="p">:</span> <span class="s1">'post'</span>
+                       <span class="p">}</span>
+                   <span class="p">]</span>
+               <span class="p">}</span>
+               
+           <span class="p">],</span>
+           
+           <span class="cm">/*
+           * 配置webpack不需要处理的模块，主要是针对那些没有采用模块化标准的文件，这样可以提高构建的性能，比如一些工具库，
+           * 如jQuery，ChartJS等，去解析这些庞大的文件耗时且没有意义。
+           * noParse的配置只能精确到文件
+           * 类型是 RegExp、[RegExp]、function 之一，如：
+           * noParse: /jquery|chartjs/
+           * */</span>
+           <span class="na">noParse</span><span class="p">:</span> <span class="p">(</span><span class="nx">content</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+               <span class="c1">// content 代表一个模块文件路径</span>
+               <span class="c1">// 返回 true 或 false</span>
+               <span class="k">return</span> <span class="sr">/jquery|chartjs/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">content</span><span class="p">);</span>
+           <span class="p">},</span>
+           
+           <span class="cm">/*
+           * 因为webpack是以模块化的js文件作为入口的，所以内置了对模块化js的解析功能，支持AMD,CommonJS，SystemJS，ES6。
+           * parse属性可以更细粒度地配置哪些模块语法被解析，哪些不被解析。parse配置可以精确到语法层面。
+           * */</span>
+           <span class="na">parse</span><span class="p">:{</span>
+               <span class="na">amd</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用AMD</span>
+               <span class="na">commonjs</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用 CommonJS</span>
+               <span class="na">system</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用 SystemJS</span>
+               <span class="na">harmony</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用 ES6 import/export</span>
+               <span class="na">requireInclude</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用 require.include</span>
+               <span class="na">requireEnsure</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用 require.ensure</span>
+               <span class="na">requireContext</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用 require.context</span>
+               <span class="na">browserify</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用 browserify</span>
+               <span class="na">requireJs</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span> <span class="c1">// 禁用 requirejs</span>
+           <span class="p">}</span>
+       <span class="p">},</span>
+       
+       <span class="cm">/*
+       * 配置webpack如何寻找模块所对应的文件。
+       * webpack内置js模块化语法解析功能，默认采用模块化标准里约定的规则去寻找，也可以自定义修改
+       * */</span>
+       <span class="na">resolve</span><span class="p">:</span> <span class="p">{</span>
+           <span class="cm">/*
+           * 别名配置，通过别名将原路径映射成一个新的导入路径
+           * */</span>
+           <span class="na">alias</span><span class="p">:</span> <span class="p">{</span>
+               <span class="cm">/*
+               * 当通过import Button from 'components/button'导入时，
+               * 会被alias替换成 import Button from './src/components/button'
+               * 这样做可能会命中太多的导入语句
+               * */</span>
+               <span class="na">components</span><span class="p">:</span> <span class="s1">'./src/components/'</span><span class="p">,</span>
+               <span class="cm">/*
+               * 可以通过$符号来缩小范围，只命中已关键字结尾的导入语句
+               * 下面的配置只会命中以react结尾的导入语句，即只会将 import 'react' 换成 import '/path/to/react.min.js'
+               * */</span>
+               <span class="s1">'react$'</span><span class="p">:</span> <span class="s1">'/path/to/react.min.js'</span>
+           <span class="p">},</span>
+           <span class="cm">/*
+           * 通过一个object来描述更详细的配置
+           * */</span>
+           <span class="na">alias</span><span class="p">:</span> <span class="p">[</span>
+               <span class="p">{</span>
+                   <span class="na">name</span><span class="p">:</span><span class="s1">'module'</span><span class="p">,</span> <span class="c1">// 老模块</span>
+                   <span class="na">alias</span><span class="p">:</span><span class="s1">'new-module'</span><span class="p">,</span> <span class="c1">// 新模块</span>
+                   <span class="cm">/*
+                   * 是否只映射模块，如果是true，则只有'module'会被映射，如果是false，则'module/inner/path'也会被映射
+                   * */</span>
+                   <span class="na">onlyModule</span><span class="p">:</span><span class="kc">true</span>
+               <span class="p">}</span>
+           <span class="p">],</span>
+           
+           <span class="cm">/*
+           * 有些第三方模块会针对不同的环境提供几份代码，比如某个模块分别提供了采用ES5和ES6语法的两份代码，
+           * 这两份代码的位置写在模块的package.json配置文件中：
+           * {
+           *     "jsnext:main":"es/index.js",  // 采用ES6语法的代码入口文件
+           *     "main":"lib/index.js" // 采用ES5语法的代码入口文件
+           * }
+           * webpack 会根据 mainFields 的配置决定优先采用哪份代码，mainFields默认配置为：
+           * mainFields: ['browser', 'main']
+           * webpack 会按照数组里的顺序在第三方模块的package.json文件里面寻找，只会使用第一个找到的文件。
+           * 如果我们想优先采用以ES6语法编写的入口文件，那么可以做如下配置：
+           * */</span>
+           <span class="na">mainFields</span><span class="p">:</span> <span class="p">[</span><span class="s1">'jsnext:main'</span><span class="p">,</span> <span class="s1">'browser'</span><span class="p">,</span> <span class="s1">'main'</span><span class="p">],</span>
+           
+           <span class="cm">/*
+           * 当导入语句没有指明文件后缀时，webpack会按照resolve.extensions的配置去依次尝试寻找对应后缀的文件，默认配置是
+           * extensions: ['.js', '.json'],
+           * 从左到右寻找
+           * 也就是说当遇到 require('./data')语句时，webpack会先去找./data.js 文件，如果文件不存在，再继续找 ./data.json
+           * 文件，如果遍历完所有指定的文件后缀都没有找到对应的文件，就会报错。
+           * 
+           * 所以，为了加快构建速度，我们可以在写导入语句时，明确指定文件后缀。
+           * */</span>
+           <span class="na">extensions</span><span class="p">:</span> <span class="p">[</span><span class="s1">'.js'</span><span class="p">,</span> <span class="s1">'.json'</span><span class="p">],</span>
+           
+           <span class="cm">/*
+           * 配置webpack去哪些目录下寻找第三方模块，默认是 node_modules
+           * 为数组类型
+           * 有时候我们项目里会有一些基础模块被其他模块大量依赖和导入，但是其他的模块位置不固定，所以就会出现各种层级的相对路径导入，
+           * 导致导入语句路径很长：import '../../../components/button',
+           * 可以在modules加入根目录配置 './src/components',那么导入语句就可以改成 import 'button'。
+           * */</span>
+           <span class="na">modules</span><span class="p">:</span> <span class="p">[</span><span class="s1">'./src/components'</span><span class="p">,</span> <span class="s1">'node_modules'</span><span class="p">],</span>
+           
+           <span class="cm">/*
+           * 是否跟随文件的软链接去搜寻模块的路径，为Boolean类型，默认 true
+           * */</span>
+           <span class="na">symlinks</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 第三方模块的描述文件,默认均为 package.json
+           * */</span>
+           <span class="na">descriptionFiles</span><span class="p">:</span> <span class="p">[</span><span class="s1">' package.json'</span><span class="p">],</span>
+           
+           <span class="cm">/*
+           * 配置导入语句是不是都需要带后缀，如果配置成true，那么import './foo'会报错，必须写成 import './foo.js'
+           * */</span>
+           <span class="na">enforceExtension</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 配置node_modules 文件下里的导入语句是不是应该都需要带后缀，因为大多数第三方模块的导入语句都没有带文件后缀，
+           * 所以当 enforceExtension 设置成 true时，enforceModuleExtension应该设置成false，以兼容第三方模块。
+           * */</span>
+           <span class="na">enforceModuleExtension</span><span class="p">:</span> <span class="kc">false</span>
+           
+       <span class="p">},</span>
+       
+       <span class="cm">/*
+       * 用于配置webpack的扩展功能，为数组类型，数组的每一项都是一个plugin实例，每个实例一般都是通过构造函数传入相应参数生成的。
+       * 一般在plugins里面配置js代码压缩，资源拷贝，css文件提取，happypack，公共代码提取等操作。
+       * plugin本身没有什么配置，主要是生成实例时的参数配置，需要根据不同的第三方插件的api说明来配置，以达到不同的目的。
+       * */</span>
+       <span class="na">plugins</span><span class="p">:</span> <span class="p">[</span>
+           <span class="k">new</span> <span class="nx">commonChunkPlugin</span><span class="p">({</span>
+               <span class="na">name</span><span class="p">:</span> <span class="s1">'common'</span><span class="p">,</span>
+               <span class="na">chunks</span><span class="p">:</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">]</span>
+           <span class="p">})</span>
+       <span class="p">],</span>
+       
+       <span class="cm">/*
+       * 在实际开发过程中，我们往往需要：
+       * 1. 提供http服务而不是使用本地文件预览
+       * 2. 监听文件变化并自动刷新页面，做到实时预览
+       * 3. 支持Source Map，方便调试
+       * 
+       * webpack官方提供了devServer开发工具，devServer会启动一个http服务用于网页请求，还会启动webpack，并接收webpack发出的文件
+       * 变更信号，通过websocket协议自动刷新网页。
+       * 此时webpack构建出的文件被保存在内存中。
+       * 同时devServer可以通过Source Map 映射代码，让我们在源码上断点调试。
+       * 
+       * webpack本身不认识devServer的配置项，只有通过devServer启动webpack时，devServer的配置才会生效。
+       * */</span>
+       <span class="na">devServer</span><span class="p">:</span> <span class="p">{</span>
+           <span class="cm">/*
+           * 是否开启热模块替换,devServer的默认行为是在发现源码被更新后自动刷新整个页面，开启hot配置后，只会更新改变的模块，不会
+           * 刷新整个页面。
+           * */</span>
+           <span class="na">hot</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * devServer的实时预览功能依赖一个注入页面里的代理客户端去接收来自devServer的命令并负责刷新页面的工作。
+           * inline用于配置是否将这个代理客户端自动注入将运行在页面中的chunk里，默认自动注入。
+           * devServer会根据是否开启inline配置来调整它的自动刷新策略。
+           * 如果开启inline，则devServer会在构建变化后的代码时通过代理客户端控制网页刷新
+           * 如果关闭inline，则devServer将无法直接控制要开发的网页。这时它会通过iframe的方式去运行要开发的网页。在构建变化后的代码
+           * 时，会通过刷新iframe来实现实时预览，但这时我们需要去 http://localhost:8080/webpack-dev-server/实时预览自己的网页。
+           * */</span>
+           <span class="na">inline</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 配置为true时，任何请求都会但会index.html文件，这只能用于只有一个html文件的单页应用。
+           * 且应用使用了HTML5 History API。
+           * historyApiFallback: true,
+           * 
+           * 如果我们的应用由多个页面组成，则需要devServer根据不同的请求返回不同的HTML文件，配置如下：
+           * 
+           * */</span>
+           <span class="na">historyApiFallback</span><span class="p">:</span> <span class="p">{</span>
+               <span class="na">rewrites</span><span class="p">:</span> <span class="p">[</span>
+                   <span class="c1">// 以user开的的都返回user.html</span>
+                   <span class="p">{</span><span class="na">from</span><span class="p">:</span> <span class="sr">/^</span><span class="se">\/</span><span class="sr">user/</span><span class="p">,</span> <span class="na">to</span><span class="p">:</span> <span class="s1">'user.html'</span><span class="p">},</span>
+                   <span class="c1">// 以game开头的都返回game.html</span>
+                   <span class="p">{</span><span class="na">from</span><span class="p">:</span> <span class="sr">/^</span><span class="se">\/</span><span class="sr">game/</span><span class="p">,</span> <span class="na">to</span><span class="p">:</span> <span class="s1">'game.html'</span><span class="p">},</span>
+                   <span class="c1">// 其他的都返回index.html</span>
+                   <span class="p">{</span><span class="na">from</span><span class="p">:</span> <span class="sr">/./</span><span class="p">,</span> <span class="na">to</span><span class="p">:</span> <span class="s1">'index.html'</span><span class="p">},</span>
+               <span class="p">]</span>
+           <span class="p">},</span>
+           
+           <span class="cm">/*
+           * 配置devServer服务器的文件根目录，默认情况是当前的执行目录，通常就是项目的根目录，所以一般不需要设置这一项，
+           * 除非有额外的文件需要被devServer服务，比如想把根目录下的public目录设置成devServer服务器的文件根目录。
+           * devServer服务器通过HTTP服务暴露文件的方式分成两类：
+           * 1. 暴露本地文件
+           * 2. 暴露webpack构建出来的结果，由于构建出的结果交给了devServer，所以我们再使用devServer时，会在本地找不到构建出来的文件。
+           * 
+           * contentBase只能用来配置暴露本地文件的规则，设置成false可以关闭暴露本地文件。
+           * */</span>
+           <span class="na">contentBase</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span><span class="s1">'public'</span><span class="p">),</span>
+           
+           <span class="cm">/*
+           * headers配置项可以在HTTP响应中配置一些HTTP响应头
+           * */</span>
+           <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+               <span class="s1">'x-foo'</span><span class="p">:</span> <span class="s1">'bar'</span>
+           <span class="p">},</span>
+           
+           <span class="cm">/*
+           * ---- host ----
+           * 
+           * 配置devServer服务监听的地址，只能通过命令行传入，如果想让局域网内的其他设备访问自己本地的服务，可以在启动devS时带上参数
+           * --host 0.0.0.0
+           * host 的默认值是 127.0.0.0，只能本地访问devServer的HTTP服务。
+           * */</span>
+           
+           <span class="cm">/*
+           * 配置devServer服务监听的端口号，默认是8080，如果被占用可以改成其他的端口号
+           * */</span>
+           <span class="na">port</span><span class="p">:</span> <span class="s1">'8081'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 配置一个白名单列表，只有HOST在列表里的HTTP请求才能正常返回
+           * 
+           * */</span>
+           <span class="na">allowedHosts</span><span class="p">:</span> <span class="p">[</span>
+               <span class="s1">'host.com'</span><span class="p">,</span>
+               <span class="s1">'sub.host.com'</span><span class="p">,</span>
+               <span class="c1">// 所有host2.com 和所有的子域名 *.host2.com 都将匹配</span>
+               <span class="s1">'.host2.com'</span>
+           <span class="p">],</span>
+           
+           <span class="cm">/*
+           * 配置是否关闭用于DNS重新绑定的HTTP请求的HOST检查
+           * devServer默认只接收来自本地的请求，关闭后就能接收来自任意HOST的请求，它通常和 --host 0.0.0.0 一起使用，因为其他设备访问时，
+           * 是通过IP访问而不是通过HOST 访问，所以需要关闭HOST检查。
+           * */</span>
+           <span class="na">disbaleHostCheck</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * devServer默认使用http服务，也可以配置成使用https服务,配置成 true 时，devServer会自动为我们生成一份 HTTPS 证书，如果
+           * 我们想使用自己的证书，也可以自定义配置证书信息：
+           * */</span>
+           <span class="na">https</span><span class="p">:</span> <span class="p">{</span>
+               <span class="na">key</span><span class="p">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">'path/to/server.key'</span><span class="p">),</span>
+               <span class="na">cert</span><span class="p">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">'path/to/server.cert'</span><span class="p">),</span>
+               <span class="na">ca</span><span class="p">:</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readFileSync</span><span class="p">(</span><span class="s1">'path/to/ca.pem'</span><span class="p">)</span>
+           <span class="p">},</span>
+           
+           <span class="cm">/*
+           * 配置客户端的日志级别，这会影响到我们在浏览器控制台里看到的日志内容。为枚举类型字符串,可以是 none、error、warning、info。
+           * 默认 info，即输出所有类型的日志，设置成none则不输出任何日志。
+           * 
+           * */</span>
+           <span class="na">clintLogLevel</span><span class="p">:</span> <span class="s1">'info'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 是否启用Gzip压缩，默认false
+           * */</span>
+           <span class="na">compress</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * devServer第一次构建完成后，是否自动使用默认浏览器打开要开发的网页
+           * */</span>
+           <span class="na">open</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * devServer第一次构建完成后，打开指定的网页，需要open设置成true
+           * */</span>
+           <span class="na">openPage</span><span class="p">:</span> <span class="s1">'/index.html#login'</span><span class="p">,</span>
+           
+           <span class="cm">/*
+           * 配置代理到后端的服务接口
+           * */</span>
+           <span class="na">proxy</span><span class="p">:</span> <span class="p">{</span>
+               <span class="s1">'/api'</span><span class="p">:</span> <span class="s1">'http://localhost:3000'</span>
+           <span class="p">},</span>
+           
+           
+       <span class="p">},</span>
+       <span class="cm">/*
+       * 是否开启缓存来提高webpack的构建性能
+       * */</span>
+       <span class="na">cache</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+                  
+       <span class="cm">/*
+       * 是否捕捉webpack构建的性能信息，用于分析是什么原因导致构建性能不佳
+       * */</span>
+       <span class="na">profile</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+       <span class="cm">/*
+       * 配置webpack构建出来的代码在什么环境下运行，默认是在浏览器内运行，其他配置如下：
+       * web: 针对浏览器（默认），所有代码集中在一个文件里
+       * node: 针对Node.js，使用require语句加载 Chunk 代码
+       * async-node: 针对Node.js， 异步加载 Chunk 代码
+       * node-webkit: nw.js
+       * webworker: 针对 WebWorker
+       * electron-main: 针对 Electron 主线程 （http://electron.atom.io/）
+       * electron-renderer: 针对 Electron 渲染线程
+       * */</span>
+       <span class="na">target</span><span class="p">:</span> <span class="s1">'web'</span><span class="p">,</span>
+                  
+       <span class="cm">/*
+       * 配置webpack如何生成Source Map，默认值是false，即不生成 Source Map，如果想生成 Source Map方便调试，可以按照下面这样配置。
+       * 生成 Source Map需要消耗大量webpack构建性能。
+       * */</span>
+       <span class="na">devtool</span><span class="p">:</span><span class="s1">'source-map'</span><span class="p">,</span>
+        
+       <span class="cm">/*
+       * 是否开启监听，在文件发生变化时自动重新编译，默认是关闭的，即false，在使用devServer时，默认是开启的。
+       * */</span>
+       <span class="na">watch</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+       
+       <span class="cm">/*
+       * 详细配置监听模式
+       * */</span>
+       <span class="na">watchOptions</span><span class="p">:</span> <span class="p">{</span>
+           <span class="c1">// 不监听的文件或者文件夹，支持正则，默认为空</span>
+           <span class="na">ignored</span><span class="p">:</span> <span class="sr">/node_modules/</span><span class="p">,</span>
+           <span class="c1">// 监听到代码变化300ms后再去执行动作，截流，防止文件更新太快导致重新编译频率太高，默认 300ms</span>
+           <span class="na">aggregateTimeout</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+           <span class="c1">// 判断文件是否发生变化，是通过不停地询问系统指定文件有没有变化实现的，默认每秒询问1000次</span>
+           <span class="na">pool</span><span class="p">:</span> <span class="mi">1000</span>
+       <span class="p">},</span>
+       
+       <span class="cm">/*
+       * 配置webpack在构建代码的过程中使用了哪些不需要被打包的模块，也就是说这些模块是外部提供的，webpack在打包时可以忽略它们。
+       * 有些js运行环境可能内置了一些全局变量或者模块，比如我们在在index.html中的head标签里引入了jquery
+       * &lt;script src="path/to/jquery.js"&gt;&lt;/script&gt;
+       * 这时，全局变量jQuery就会被注入到网页的js运行环境里。
+       * 如果想要在模块化的源码里面使用jquery，需要 import $ from 'jquery'，但是在构建输出的Chunk里已经包含了jquery库的内容，
+       * 这导致jquery出现了两次，浪费加载流量，最好在Chunk里面不再包含jquery代码了。
+       * externals 就可以告诉webpack在js运行环境中已经内置了哪些全局变量，不需要将这些全局变量打包到代码中而是直接使用它们即可。
+       * 
+       * */</span>
+       <span class="na">externals</span><span class="p">:</span> <span class="p">{</span>
+           <span class="c1">// 将导入语句里的jquery替换成运行环境里的全局变量jQuery</span>
+           <span class="na">jquery</span><span class="p">:</span> <span class="s1">'jQuery'</span>
+       <span class="p">},</span>
+       
+       <span class="cm">/*
+       * 配置webpack如何去寻找Loader，因为在使用Loader时是通过其包名称去引用的，webpack需要根据配置的Loader包名称去找到相应的代码
+       * 来处理源文件。通常用来配置加载本地Loader
+       * */</span>
+       <span class="na">resolveLoader</span><span class="p">:</span> <span class="p">{</span>
+           <span class="c1">//去哪个目录下寻找Loader</span>
+           <span class="na">modules</span><span class="p">:</span> <span class="p">[</span><span class="s1">'node_modules'</span><span class="p">],</span>
+           <span class="c1">//Loader的入口文件后缀</span>
+           <span class="na">extensions</span><span class="p">:</span> <span class="p">[</span><span class="s1">'.js'</span><span class="p">,</span> <span class="s1">'.json'</span><span class="p">],</span>
+           <span class="c1">//指明入口文件位置的字段</span>
+           <span class="na">mainFields</span><span class="p">:</span> <span class="p">[</span><span class="s1">'loader'</span><span class="p">,</span> <span class="s1">'main'</span><span class="p">]</span>
+       <span class="p">},</span>
+       
+       <span class="cm">/*
+       * 配置控制台输出webpack打包完成时输出的信息，详细配置查看api https://www.webpackjs.com/configuration/stats/
+       * */</span>
+       <span class="na">stats</span><span class="p">:</span> <span class="p">{</span>
+           <span class="na">assets</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// 添加资源信息</span>
+           <span class="na">colors</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// 使用不同颜色区分信息 等同于 webpack --colors</span>
+           <span class="na">errors</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// 添加错误信息</span>
+           <span class="na">errorDetails</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>  <span class="c1">// 添加错误的详细信息（就像解析日志一样）</span>
+           <span class="na">hash</span><span class="p">:</span> <span class="kc">true</span>  <span class="c1">// 添加 compilation 的哈希值</span>
+       <span class="p">},</span>
+       
+       <span class="cm">/*
+       * 配置如何展示性能提示。例如，如果一个资源超过 250kb，webpack 会对此输出一个警告来通知你。
+       * */</span>
+       <span class="na">performance</span><span class="p">:</span> <span class="p">{</span>
+           <span class="cm">/*
+           * 打开或关闭提示，默认值为 'warning', 可选值有false，'error' ， 'warning'。
+           * 生产环境构建时，推荐使用'error'，有助于防止把体积巨大的 bundle 部署到生产环境，从而影响网页的性能。
+           * */</span>
+           <span class="na">hints</span><span class="p">:</span> <span class="s1">'warning'</span><span class="p">,</span>
+           <span class="c1">// 资源(asset)是从 webpack 生成的任何文件，此选项限制了单个资源体积的大小，超过则会给出性能提示，默认值是 250000 (bytes)。</span>
+           <span class="na">maxAssetSize</span><span class="p">:</span> <span class="mi">200000</span><span class="p">,</span>
+           <span class="c1">// 限制入口文件的大小，默认是 250000 (bytes)。</span>
+           <span class="na">maxEntrypointSize</span><span class="p">:</span> <span class="mi">200000</span><span class="p">,</span>
+           <span class="c1">// 过滤需要检查的文件</span>
+           <span class="na">assetFilter</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">assetFilename</span><span class="p">)</span> <span class="p">{</span>
+               <span class="k">return</span> <span class="nx">assetFilename</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">'.css'</span><span class="p">)</span> <span class="o">||</span> <span class="nx">assetFilename</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">'.js'</span><span class="p">);</span>
+           <span class="p">}</span>
+       <span class="p">}</span>
+       
+   <span class="p">}</span>
+</code></pre></div></div>
+
+<p>这一篇内容算是比较全面的webpack配置讲解了，更详细的的配置可以参考官网api。</p>
+
+<p>后面再写一篇，介绍下一般在项目中是如何将配置划分到不同的配置文件，比如webpack.base.conf.js、webpack.dev.conf.js、webpack.prod.conf.js等。</p>
+
+<p>然后再写一写一般如何做webpack构建配置优化。</p>
+
+</div>
+    </div>
+    <div class="sidebar-list">
+        <div class="tag-cloud">
+    <ul>
+        <li>JavaScript</li>
+        <li>Node.js</li>
+        <li>Vue</li>
+        <li>React</li>
+        <li>Koa2</li>
+        <li>Webpack</li>
+        <li>TypeScript</li>
+        <li>Express</li>
+    </ul>
+</div>
+        <div class="search-box">
+    <div class="search-holder">
+        <input class="search-input" type="text" placeholder="没事别瞎点搜索">
+    </div>
+</div>
+        <div class="blog-author">
+    <div class="avatar">
+        <img src="/assets/images/avatar/dfyc.jpeg" alt="" width="160">
+    </div>
+    <ul>
+        <li>昵称：lizm</li>
+        <li>性别：少年</li>
+        <li>生日：1993-03-29</li>
+        <li>签名：</li>
+        <li>hahaahahhahahahahahaahahhahahaahah</li>
+    </ul>
+</div>
+        <div class="date-picker">
+    <link rel="stylesheet" href="/lib/calendar/css/calendar.css">
+    <script src="/lib/jquery/jquery-3.4.1.js"></script>
+    <script src="/lib/calendar/js/calendar.js"></script>
+    <div id="calendar" class="calendar"></div>
+</div>
+        <div class="hot-posts">
+
+</div>
+    </div>
+</div>
+</body>
+</html>
