@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-06-11T18:45:51+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">webpack 配置详解</title><link href="http://localhost:4000/webpack/2019/06/11/webpack-config.html" rel="alternate" type="text/html" title="webpack 配置详解" /><published>2019-06-11T15:37:31+08:00</published><updated>2019-06-11T15:37:31+08:00</updated><id>http://localhost:4000/webpack/2019/06/11/webpack-config</id><content type="html" xml:base="http://localhost:4000/webpack/2019/06/11/webpack-config.html">&lt;p&gt;基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-06-12T09:40:49+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">webpack 配置详解</title><link href="http://localhost:4000/webpack/2019/06/11/webpack-config.html" rel="alternate" type="text/html" title="webpack 配置详解" /><published>2019-06-11T15:37:31+08:00</published><updated>2019-06-11T15:37:31+08:00</updated><id>http://localhost:4000/webpack/2019/06/11/webpack-config</id><content type="html" xml:base="http://localhost:4000/webpack/2019/06/11/webpack-config.html">&lt;p&gt;基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。&lt;/p&gt;
 
 &lt;h3&gt;1. webpack配置方式介绍&lt;/h3&gt;
 
@@ -635,7 +635,7 @@
    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;这一篇内容算是比较全面的webpack配置讲解了，更详细的的配置可以参考官网api。&lt;/p&gt;
+&lt;p&gt;这一篇内容算是比较全面的webpack配置讲解了，参考《深入浅出webpack》，更详细的的配置可以参考官网api。&lt;/p&gt;
 
 &lt;p&gt;后面再写一篇，介绍下一般在项目中是如何将配置划分到不同的配置文件，比如webpack.base.conf.js、webpack.dev.conf.js、webpack.prod.conf.js等。&lt;/p&gt;
 
