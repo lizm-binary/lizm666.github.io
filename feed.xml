@@ -1,4 +1,181 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2019-06-12T09:40:49+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">webpack 配置详解</title><link href="http://localhost:4000/webpack/2019/06/11/webpack-config.html" rel="alternate" type="text/html" title="webpack 配置详解" /><published>2019-06-11T15:37:31+08:00</published><updated>2019-06-11T15:37:31+08:00</updated><id>http://localhost:4000/webpack/2019/06/11/webpack-config</id><content type="html" xml:base="http://localhost:4000/webpack/2019/06/11/webpack-config.html">&lt;p&gt;基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://0.0.0.0:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/" rel="alternate" type="text/html" /><updated>2019-06-14T17:03:10+08:00</updated><id>http://0.0.0.0:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">如何设计高质量的React组件（还在写）</title><link href="http://0.0.0.0:4000/react/2019/06/14/HQ-react-component.html" rel="alternate" type="text/html" title="如何设计高质量的React组件（还在写）" /><published>2019-06-14T09:18:41+08:00</published><updated>2019-06-14T09:18:41+08:00</updated><id>http://0.0.0.0:4000/react/2019/06/14/HQ-react-component</id><content type="html" xml:base="http://0.0.0.0:4000/react/2019/06/14/HQ-react-component.html">&lt;h3&gt;1. 易于维护的组件应该遵循哪些设计原则&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;职责单一原则&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;尽量保持一个组件只做一件事情。如果发现一个组件功能太多代码量很大时，应该考虑拆分这个组件，用多个小组件来代替。这就是“分而治之”的策略，把问题分成多个小问题，这样既容易解决也方便维护；但是不能滥用，只有真的有必要拆分组件时才去拆分，否则将得不偿失。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;明确组件边界&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;拆分组件的关键就是确定组件的边界，每个组件都用该是独立存在的，如果两个组件的逻辑联系紧密，无法清晰定义各自的职责，那也许这两个组件就不该拆开，作为同一个组件也许更合理。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;高内聚&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;把逻辑紧密相关的内容放在一个组件中，react的JSX文件包含展示内容的html，定义行为的js和定义样式的css，天然具有高内聚的特点。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;低耦合&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;不同组件之间的依赖关系要尽量弱化，也就是每个组件要尽量独立。组件之间做到低耦才能使整个系统低耦合，这一点需要开发者对系统的功能有充分的辨识度，然后根据功能点划分出合理的模块，让不同组件去完成不同的功能。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;2. 如何设计React组件的数据&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;差劲的程序员操心代码，优秀的程序员操心数据结构和它们之间的关系。（Linux创始人：&lt;code class=&quot;highlighter-rouge&quot;&gt;Linus Torvalds&lt;/code&gt;）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt; 还是 &lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;无论是&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;还是&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;发生改变，都将可能引起组件的重新渲染，设计一个组件时，什么时候需要用到&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;什么时候需要用到&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;？答案是：对外使用&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;，对内使用&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;。&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;是组件的对外接口，&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;是组件自身的内部状态。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;关于 &lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt; 是外部传递给组件的数据，一个React组件通过定义自己能够接收的&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;从而决定自身对外部暴露的接口，&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;一般在组件的整个生命周期中都是只读的。&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt; 支持&lt;code class=&quot;highlighter-rouge&quot;&gt;所有的JavaScript数据类型&lt;/code&gt; ¹。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;HTML元素&lt;/code&gt;属性的区别在于：HTML元素的所有属性的值都是字符串类型或布尔值 ²，即使是内嵌js代码，也是字符串形式的代码。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;当&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;的值的类型不是字符串类型时，在&lt;code class=&quot;highlighter-rouge&quot;&gt;JSX&lt;/code&gt;中应该是使用&lt;code class=&quot;highlighter-rouge&quot;&gt;{}&lt;/code&gt;将&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;的值包住，所以我们常写的&lt;code class=&quot;highlighter-rouge&quot;&gt;style&lt;/code&gt;有两层&lt;code class=&quot;highlighter-rouge&quot;&gt;{}&lt;/code&gt;，外面一层代表&lt;code class=&quot;highlighter-rouge&quot;&gt;JSX&lt;/code&gt;的语法，里面一层表示属性值是一个对象常量。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;React组件通过props接收外部数据，同样也是通过&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;向外部传递数据的，当&lt;code class=&quot;highlighter-rouge&quot;&gt;props的类型是函数&lt;/code&gt;时，相当于父组件交给子组件一个回调函数，子组件在恰当的时候调用该函数，函数接收相关的参数，就能把相关的数据传递到外部了。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;如果在组件中想要通过&lt;code class=&quot;highlighter-rouge&quot;&gt;this.props&lt;/code&gt;访问父组件传递过来的&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;数据，必须在&lt;code class=&quot;highlighter-rouge&quot;&gt;constructor&lt;/code&gt;方法内调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;super(props)&lt;/code&gt;。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;开发调试时，可以通过定义组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;propTypes&lt;/code&gt;来对&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;数据进行检查，&lt;code class=&quot;highlighter-rouge&quot;&gt;propTypes&lt;/code&gt;是辅助开发的功能，不会改变组件的行为。生产代码应该去掉&lt;code class=&quot;highlighter-rouge&quot;&gt;propTypes&lt;/code&gt;检查代码，应为这些输出的信息对于用户来说是没有意义的。可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;babel-react-optimize&lt;/code&gt;插件通过&lt;code class=&quot;highlighter-rouge&quot;&gt;webpack&lt;/code&gt;打包时配置在生产配置中。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;this.props.children&lt;/code&gt;包含本组件实例下的所有子组件，由&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;自动填充。&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;关于&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt; 组件不能修改传入的&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;，如果需要记录自身相关的一些数据变化，那么就需要定义&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;。&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;必须是一个JavaScript对象，所有需要存储的值都应该是&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;对象的属性对应的值。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;定义&lt;code class=&quot;highlighter-rouge&quot;&gt;this.state&lt;/code&gt;时，如果要用到父组件的props中的数据但是不确定该prop是否存在，可以使用defaultProps给字段赋上默认值。&lt;/p&gt;
+
+        &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;nx&quot;&gt;Counter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaultProps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+     &lt;span class=&quot;na&quot;&gt;initVal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+ 
+ &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+     &lt;span class=&quot;na&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;initVal&lt;/span&gt;
+ &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;        &lt;/div&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;只能通过&lt;code class=&quot;highlighter-rouge&quot;&gt;this.setState(data,callback)&lt;/code&gt;合并&lt;code class=&quot;highlighter-rouge&quot;&gt;data&lt;/code&gt;到&lt;code class=&quot;highlighter-rouge&quot;&gt;this.state&lt;/code&gt;中，&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;会自动触发组件重新渲染，渲染完成后，调用可选的&lt;code class=&quot;highlighter-rouge&quot;&gt;callback&lt;/code&gt;回调调方法，大部分情况下不需要调用&lt;code class=&quot;highlighter-rouge&quot;&gt;callback&lt;/code&gt;，因为&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;会自动更新视图。直接向&lt;code class=&quot;highlighter-rouge&quot;&gt;this.state&lt;/code&gt;赋值虽然可以更新&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;，但是不会触发组件重新渲染，界面不会体现出数据更新，这样做往往导致意想不到的问题。&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt; 的的设计原则 ³&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;组件大部分的原始数据应该来源于&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;，只有对用户输入、服务器请求、时间变化等需要作出界面视图相应并暂存中间状态时，才需要使用&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;记录。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;组件应该尽可能地无状态化，这样可以减少冗余，同时可以使程序的运作过程更清晰。常见的模式是创建多个只负责渲染数据的无状态（&lt;code class=&quot;highlighter-rouge&quot;&gt;stateless&lt;/code&gt;）组件，在他们的上层再创建一个有状态（&lt;code class=&quot;highlighter-rouge&quot;&gt;stateful&lt;/code&gt;）组件，并把它的状态通过&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;传递给子组件。这个有状态的的组件封装了所有用户的交互逻辑，这其下面的无状态组件则只负责声名式地渲染数据。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;应该只包括可能被组件的事件处理器改变并触发用户界面更新的最小数据集合。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;以下几种数据不应该包含在&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;中:&lt;/p&gt;
+
+        &lt;ul&gt;
+          &lt;li&gt;
+            &lt;p&gt;计算所得数据：没有必要把计算所得的数据放在&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;中，把计算过程都放在&lt;code class=&quot;highlighter-rouge&quot;&gt;render()&lt;/code&gt;里更容易保证用户界面和数据的一致性。&lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;组件：&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;组件应该只在&lt;code class=&quot;highlighter-rouge&quot;&gt;render()&lt;/code&gt;里创建&lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;p&gt;基于&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;的重复数据：尽可能使用&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;作为唯一数据来源。有时候可以把&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;保存到&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;中，比如在渲染时需要知道它以前的&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;值，以进行对比。&lt;/p&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;对比&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;用户定义外部接口，&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;用于记录内部状态&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;的赋值在外部使用组件时发生，&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;的赋值在组件内部定义&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;组件不应该修改&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;的值，而&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;就是为了让组件来改变以更新视图的&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;3. 组件生命周期&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;想搞清楚React的工作过程，首先就得搞清楚React的生命周期，即一个React组件从创建到销毁一般会经历哪些过程，在合适的步骤做合适的事情，才能让React发挥出其最大的优势，设计好一个React组件，离不开定制其生命周期函数。&lt;br /&gt;
+React严格定义了组件的生命周期，一般会经历以下三个过程：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;装载过程（Mount）,也就是把组件第一次在DOM树中渲染的过程；&lt;/li&gt;
+  &lt;li&gt;更新过程（Update）,组件被重新渲染的过程；&lt;/li&gt;
+  &lt;li&gt;卸载过程（Unmount）,组件从DOM中删除的过程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在这三个不同的过程，React会依次调用组件的一些成员函数，这些成员函数也成为生命周期函数。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;装载过程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;本文主要参考《深入浅出React和Redux》一书，以下标注代表阅读时发现的一些错误指正： &lt;br /&gt;
+① 原书说 props 支持除了字符串以外的所有js数据类型，字符串也是支持的，所以是支持所有的js数据类型。&lt;br /&gt;
+② 原书说 HTML 元素的所有属性值都是字符串，也可以是布尔类型。&lt;br /&gt;
+③ 参考《React 前端技术与工程实践》一书。&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name>lizm</name></author><category term="react" /><summary type="html">作为一个合格的开发者，不要只满足于编写可以运行的代码，而要了解代码背后的工作原理；不要只满足于自己编写的程序能够运行，还要让自己的代码可读性好且易于维护；这样才能开发出高质量的软件。</summary></entry><entry><title type="html">webpack 配置详解</title><link href="http://0.0.0.0:4000/webpack/2019/06/11/webpack-config.html" rel="alternate" type="text/html" title="webpack 配置详解" /><published>2019-06-11T15:37:31+08:00</published><updated>2019-06-11T15:37:31+08:00</updated><id>http://0.0.0.0:4000/webpack/2019/06/11/webpack-config</id><content type="html" xml:base="http://0.0.0.0:4000/webpack/2019/06/11/webpack-config.html">&lt;p&gt;基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。&lt;/p&gt;
 
 &lt;h3&gt;1. webpack配置方式介绍&lt;/h3&gt;
 
@@ -639,7 +816,7 @@
 
 &lt;p&gt;后面再写一篇，介绍下一般在项目中是如何将配置划分到不同的配置文件，比如webpack.base.conf.js、webpack.dev.conf.js、webpack.prod.conf.js等。&lt;/p&gt;
 
-&lt;p&gt;然后再写一写一般如何做webpack构建配置优化。&lt;/p&gt;</content><author><name>lizm</name></author><category term="webpack" /><summary type="html">基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。</summary></entry><entry><title type="html">深入理解ES6（一）</title><link href="http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6.html" rel="alternate" type="text/html" title="深入理解ES6（一）" /><published>2019-05-16T21:19:04+08:00</published><updated>2019-05-16T21:19:04+08:00</updated><id>http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6</id><content type="html" xml:base="http://localhost:4000/es6/javascript/2019/05/16/understanding-ES6.html">&lt;p&gt;ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭头函数，尾调用优化，解构。&lt;/p&gt;
+&lt;p&gt;然后再写一写一般如何做webpack构建配置优化。&lt;/p&gt;</content><author><name>lizm</name></author><category term="webpack" /><summary type="html">基于 webpack 3.x 出的一份完整的webpack配置，详细介绍每一个配置节点的概念及用法。</summary></entry><entry><title type="html">深入理解ES6（一）</title><link href="http://0.0.0.0:4000/es6/javascript/2019/05/16/understanding-ES6.html" rel="alternate" type="text/html" title="深入理解ES6（一）" /><published>2019-05-16T21:19:04+08:00</published><updated>2019-05-16T21:19:04+08:00</updated><id>http://0.0.0.0:4000/es6/javascript/2019/05/16/understanding-ES6</id><content type="html" xml:base="http://0.0.0.0:4000/es6/javascript/2019/05/16/understanding-ES6.html">&lt;p&gt;ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭头函数，尾调用优化，解构。&lt;/p&gt;
 
 &lt;h3&gt;1. 临时死区&lt;/h3&gt;
 
@@ -1100,19 +1277,7 @@
 &lt;/ul&gt;
 
 &lt;p&gt;&lt;br /&gt; 
-下一篇总结一下Symbol，Iterator和Generator、class和Promise。&lt;/p&gt;</content><author><name>lizm</name></author><category term="ES6" /><summary type="html">ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭头函数，尾调用优化，解构。</summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2019-05-05T13:07:41+08:00</published><updated>2019-05-05T13:07:41+08:00</updated><id>http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2019/05/05/welcome-to-jekyll.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
-
-&lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
-
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry><entry><title type="html">I Have a Dream</title><link href="http://localhost:4000/martin/1963/08/28/I-Have-a-Dream.html" rel="alternate" type="text/html" title="I Have a Dream" /><published>1963-08-28T18:18:00+08:00</published><updated>1963-08-28T18:18:00+08:00</updated><id>http://localhost:4000/martin/1963/08/28/I%20Have%20a%20Dream</id><content type="html" xml:base="http://localhost:4000/martin/1963/08/28/I-Have-a-Dream.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+下一篇总结一下Symbol，Iterator和Generator、class和Promise。&lt;/p&gt;</content><author><name>lizm</name></author><category term="ES6" /><summary type="html">ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭头函数，尾调用优化，解构。</summary></entry><entry><title type="html">I Have a Dream</title><link href="http://0.0.0.0:4000/martin/1963/08/28/I-Have-a-Dream.html" rel="alternate" type="text/html" title="I Have a Dream" /><published>1963-08-28T18:18:00+08:00</published><updated>1963-08-28T18:18:00+08:00</updated><id>http://0.0.0.0:4000/martin/1963/08/28/I%20Have%20a%20Dream</id><content type="html" xml:base="http://0.0.0.0:4000/martin/1963/08/28/I-Have-a-Dream.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
 
 &lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
 

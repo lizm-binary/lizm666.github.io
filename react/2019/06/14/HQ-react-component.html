@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>如何设计高质量的React组件（还在写）</title>
+    <link rel="stylesheet" href="/lib/animate.css/animate.css">
+    <link rel="stylesheet" href="/assets/css/md-wrap.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+
+<div class="nav">
+    <ul>
+        
+        <li><a href="/" >Home</a></li>
+        
+        <li><a href="/about.html" >About</a></li>
+        
+    </ul>
+</div>
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>Title</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+
+
+<script src=""></script>
+</body>
+
+<div class="container">
+    <div class="post bounceInUp animated">
+        <div class="header">
+            <div class="title">如何设计高质量的React组件（还在写）</div>
+            <div class="info">
+                <span class="view-count">9812</span>
+                <span class="dot">·</span>
+                <span class="date">2019-06-14</span>
+                <span class="dot">·</span>
+                <span class="author">lizm</span>
+            </div>
+        </div>
+        
+        <div class="content post-content"><h3>1. 易于维护的组件应该遵循哪些设计原则</h3>
+
+<ul>
+  <li>
+    <p>职责单一原则</p>
+
+    <blockquote>
+      <p>尽量保持一个组件只做一件事情。如果发现一个组件功能太多代码量很大时，应该考虑拆分这个组件，用多个小组件来代替。这就是“分而治之”的策略，把问题分成多个小问题，这样既容易解决也方便维护；但是不能滥用，只有真的有必要拆分组件时才去拆分，否则将得不偿失。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>明确组件边界</p>
+
+    <blockquote>
+      <p>拆分组件的关键就是确定组件的边界，每个组件都用该是独立存在的，如果两个组件的逻辑联系紧密，无法清晰定义各自的职责，那也许这两个组件就不该拆开，作为同一个组件也许更合理。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>高内聚</p>
+
+    <blockquote>
+      <p>把逻辑紧密相关的内容放在一个组件中，react的JSX文件包含展示内容的html，定义行为的js和定义样式的css，天然具有高内聚的特点。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>低耦合</p>
+
+    <blockquote>
+      <p>不同组件之间的依赖关系要尽量弱化，也就是每个组件要尽量独立。组件之间做到低耦才能使整个系统低耦合，这一点需要开发者对系统的功能有充分的辨识度，然后根据功能点划分出合理的模块，让不同组件去完成不同的功能。</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h3>2. 如何设计React组件的数据</h3>
+
+<blockquote>
+  <p>差劲的程序员操心代码，优秀的程序员操心数据结构和它们之间的关系。（Linux创始人：<code class="highlighter-rouge">Linus Torvalds</code>）</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">props</code> 还是 <code class="highlighter-rouge">state</code></p>
+
+    <blockquote>
+      <p>无论是<code class="highlighter-rouge">props</code>还是<code class="highlighter-rouge">state</code>发生改变，都将可能引起组件的重新渲染，设计一个组件时，什么时候需要用到<code class="highlighter-rouge">props</code>什么时候需要用到<code class="highlighter-rouge">state</code>？答案是：对外使用<code class="highlighter-rouge">props</code>，对内使用<code class="highlighter-rouge">state</code>。<code class="highlighter-rouge">props</code>是组件的对外接口，<code class="highlighter-rouge">state</code>是组件自身的内部状态。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>关于 <code class="highlighter-rouge">props</code></p>
+
+    <blockquote>
+      <p><code class="highlighter-rouge">props</code> 是外部传递给组件的数据，一个React组件通过定义自己能够接收的<code class="highlighter-rouge">props</code>从而决定自身对外部暴露的接口，<code class="highlighter-rouge">props</code>一般在组件的整个生命周期中都是只读的。</p>
+    </blockquote>
+
+    <ul>
+      <li>
+        <p><code class="highlighter-rouge">props</code> 支持<code class="highlighter-rouge">所有的JavaScript数据类型</code> ¹。</p>
+      </li>
+      <li>
+        <p>与<code class="highlighter-rouge">HTML元素</code>属性的区别在于：HTML元素的所有属性的值都是字符串类型或布尔值 ²，即使是内嵌js代码，也是字符串形式的代码。</p>
+      </li>
+      <li>
+        <p>当<code class="highlighter-rouge">props</code>的值的类型不是字符串类型时，在<code class="highlighter-rouge">JSX</code>中应该是使用<code class="highlighter-rouge">{}</code>将<code class="highlighter-rouge">props</code>的值包住，所以我们常写的<code class="highlighter-rouge">style</code>有两层<code class="highlighter-rouge">{}</code>，外面一层代表<code class="highlighter-rouge">JSX</code>的语法，里面一层表示属性值是一个对象常量。</p>
+      </li>
+      <li>
+        <p>React组件通过props接收外部数据，同样也是通过<code class="highlighter-rouge">props</code>向外部传递数据的，当<code class="highlighter-rouge">props的类型是函数</code>时，相当于父组件交给子组件一个回调函数，子组件在恰当的时候调用该函数，函数接收相关的参数，就能把相关的数据传递到外部了。</p>
+      </li>
+      <li>
+        <p>如果在组件中想要通过<code class="highlighter-rouge">this.props</code>访问父组件传递过来的<code class="highlighter-rouge">props</code>数据，必须在<code class="highlighter-rouge">constructor</code>方法内调用 <code class="highlighter-rouge">super(props)</code>。</p>
+      </li>
+      <li>
+        <p>开发调试时，可以通过定义组件的<code class="highlighter-rouge">propTypes</code>来对<code class="highlighter-rouge">props</code>数据进行检查，<code class="highlighter-rouge">propTypes</code>是辅助开发的功能，不会改变组件的行为。生产代码应该去掉<code class="highlighter-rouge">propTypes</code>检查代码，应为这些输出的信息对于用户来说是没有意义的。可以使用<code class="highlighter-rouge">babel-react-optimize</code>插件通过<code class="highlighter-rouge">webpack</code>打包时配置在生产配置中。</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">this.props.children</code>包含本组件实例下的所有子组件，由<code class="highlighter-rouge">React</code>自动填充。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>关于<code class="highlighter-rouge">state</code></p>
+
+    <blockquote>
+      <p><code class="highlighter-rouge">React</code> 组件不能修改传入的<code class="highlighter-rouge">props</code>，如果需要记录自身相关的一些数据变化，那么就需要定义<code class="highlighter-rouge">state</code>。</p>
+    </blockquote>
+
+    <ul>
+      <li>
+        <p>组件的<code class="highlighter-rouge">state</code>必须是一个JavaScript对象，所有需要存储的值都应该是<code class="highlighter-rouge">state</code>对象的属性对应的值。</p>
+      </li>
+      <li>
+        <p>定义<code class="highlighter-rouge">this.state</code>时，如果要用到父组件的props中的数据但是不确定该prop是否存在，可以使用defaultProps给字段赋上默认值。</p>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">Counter</span><span class="p">.</span><span class="nx">defaultProps</span><span class="o">=</span><span class="p">{</span>
+     <span class="na">initVal</span><span class="p">:</span><span class="mi">0</span>
+ <span class="p">}</span>
+ 
+ <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="na">count</span><span class="p">:</span><span class="nx">props</span><span class="p">.</span><span class="nx">initVal</span>
+ <span class="p">}</span>
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>只能通过<code class="highlighter-rouge">this.setState(data,callback)</code>合并<code class="highlighter-rouge">data</code>到<code class="highlighter-rouge">this.state</code>中，<code class="highlighter-rouge">React</code>会自动触发组件重新渲染，渲染完成后，调用可选的<code class="highlighter-rouge">callback</code>回调调方法，大部分情况下不需要调用<code class="highlighter-rouge">callback</code>，因为<code class="highlighter-rouge">React</code>会自动更新视图。直接向<code class="highlighter-rouge">this.state</code>赋值虽然可以更新<code class="highlighter-rouge">state</code>，但是不会触发组件重新渲染，界面不会体现出数据更新，这样做往往导致意想不到的问题。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">state</code> 的的设计原则 ³</p>
+
+    <ul>
+      <li>
+        <p>组件大部分的原始数据应该来源于<code class="highlighter-rouge">props</code>，只有对用户输入、服务器请求、时间变化等需要作出界面视图相应并暂存中间状态时，才需要使用<code class="highlighter-rouge">state</code>记录。</p>
+      </li>
+      <li>
+        <p>组件应该尽可能地无状态化，这样可以减少冗余，同时可以使程序的运作过程更清晰。常见的模式是创建多个只负责渲染数据的无状态（<code class="highlighter-rouge">stateless</code>）组件，在他们的上层再创建一个有状态（<code class="highlighter-rouge">stateful</code>）组件，并把它的状态通过<code class="highlighter-rouge">props</code>传递给子组件。这个有状态的的组件封装了所有用户的交互逻辑，这其下面的无状态组件则只负责声名式地渲染数据。</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">state</code>应该只包括可能被组件的事件处理器改变并触发用户界面更新的最小数据集合。</p>
+      </li>
+      <li>
+        <p>以下几种数据不应该包含在<code class="highlighter-rouge">state</code>中:</p>
+
+        <ul>
+          <li>
+            <p>计算所得数据：没有必要把计算所得的数据放在<code class="highlighter-rouge">state</code>中，把计算过程都放在<code class="highlighter-rouge">render()</code>里更容易保证用户界面和数据的一致性。</p>
+          </li>
+          <li>
+            <p><code class="highlighter-rouge">React</code>组件：<code class="highlighter-rouge">React</code>组件应该只在<code class="highlighter-rouge">render()</code>里创建</p>
+          </li>
+          <li>
+            <p>基于<code class="highlighter-rouge">props</code>的重复数据：尽可能使用<code class="highlighter-rouge">props</code>作为唯一数据来源。有时候可以把<code class="highlighter-rouge">props</code>保存到<code class="highlighter-rouge">state</code>中，比如在渲染时需要知道它以前的<code class="highlighter-rouge">props</code>值，以进行对比。</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>对比<code class="highlighter-rouge">props</code>和<code class="highlighter-rouge">state</code></p>
+
+    <ul>
+      <li>
+        <p><code class="highlighter-rouge">props</code>用户定义外部接口，<code class="highlighter-rouge">state</code>用于记录内部状态</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">props</code>的赋值在外部使用组件时发生，<code class="highlighter-rouge">state</code>的赋值在组件内部定义</p>
+      </li>
+      <li>
+        <p>组件不应该修改<code class="highlighter-rouge">props</code>的值，而<code class="highlighter-rouge">state</code>就是为了让组件来改变以更新视图的</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3>3. 组件生命周期</h3>
+
+<blockquote>
+  <p>想搞清楚React的工作过程，首先就得搞清楚React的生命周期，即一个React组件从创建到销毁一般会经历哪些过程，在合适的步骤做合适的事情，才能让React发挥出其最大的优势，设计好一个React组件，离不开定制其生命周期函数。<br />
+React严格定义了组件的生命周期，一般会经历以下三个过程：</p>
+</blockquote>
+
+<ul>
+  <li>装载过程（Mount）,也就是把组件第一次在DOM树中渲染的过程；</li>
+  <li>更新过程（Update）,组件被重新渲染的过程；</li>
+  <li>卸载过程（Unmount）,组件从DOM中删除的过程。</li>
+</ul>
+
+<p>在这三个不同的过程，React会依次调用组件的一些成员函数，这些成员函数也成为生命周期函数。</p>
+
+<ul>
+  <li>装载过程</li>
+</ul>
+
+<blockquote>
+  <p>本文主要参考《深入浅出React和Redux》一书，以下标注代表阅读时发现的一些错误指正： <br />
+① 原书说 props 支持除了字符串以外的所有js数据类型，字符串也是支持的，所以是支持所有的js数据类型。<br />
+② 原书说 HTML 元素的所有属性值都是字符串，也可以是布尔类型。<br />
+③ 参考《React 前端技术与工程实践》一书。</p>
+</blockquote>
+</div>
+    </div>
+    <div class="sidebar-list">
+        <div class="tag-cloud">
+    <ul>
+        <li>JavaScript</li>
+        <li>Node.js</li>
+        <li>Vue</li>
+        <li>React</li>
+        <li>Koa2</li>
+        <li>Webpack</li>
+        <li>TypeScript</li>
+        <li>Express</li>
+    </ul>
+</div>
+        <div class="search-box">
+    <div class="search-holder">
+        <input class="search-input" type="text" placeholder="没事别瞎点搜索">
+    </div>
+</div>
+        <div class="blog-author">
+    <div class="avatar">
+        <img src="/assets/images/avatar/dfyc.jpeg" alt="" width="160">
+    </div>
+    <ul>
+        <li>昵称：lizm</li>
+        <li>性别：少年</li>
+        <li>生日：1993-03-29</li>
+        <li>签名：</li>
+        <li>hahaahahhahahahahahaahahhahahaahah</li>
+    </ul>
+</div>
+        <div class="date-picker">
+    <link rel="stylesheet" href="/lib/calendar/css/calendar.css">
+    <script src="/lib/jquery/jquery-3.4.1.js"></script>
+    <script src="/lib/calendar/js/calendar.js"></script>
+    <div id="calendar" class="calendar"></div>
+</div>
+        <div class="hot-posts">
+
+</div>
+    </div>
+</div>
+</body>
+</html>
