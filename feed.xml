@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://0.0.0.0:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/" rel="alternate" type="text/html" /><updated>2019-06-14T17:18:03+08:00</updated><id>http://0.0.0.0:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">如何设计高质量的React组件（还在写）</title><link href="http://0.0.0.0:4000/react/2019/06/14/HQ-react-component.html" rel="alternate" type="text/html" title="如何设计高质量的React组件（还在写）" /><published>2019-06-14T09:18:41+08:00</published><updated>2019-06-14T09:18:41+08:00</updated><id>http://0.0.0.0:4000/react/2019/06/14/HQ-react-component</id><content type="html" xml:base="http://0.0.0.0:4000/react/2019/06/14/HQ-react-component.html">&lt;h3&gt;1. 易于维护的组件应该遵循哪些设计原则&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="http://0.0.0.0:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://0.0.0.0:4000/" rel="alternate" type="text/html" /><updated>2019-06-24T14:50:47+08:00</updated><id>http://0.0.0.0:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">如何设计高质量的React组件</title><link href="http://0.0.0.0:4000/react/2019/06/24/HQ-react-component.html" rel="alternate" type="text/html" title="如何设计高质量的React组件" /><published>2019-06-24T14:41:41+08:00</published><updated>2019-06-24T14:41:41+08:00</updated><id>http://0.0.0.0:4000/react/2019/06/24/HQ-react-component</id><content type="html" xml:base="http://0.0.0.0:4000/react/2019/06/24/HQ-react-component.html">&lt;h3&gt;1. 易于维护的组件应该遵循哪些设计原则&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -19,7 +19,7 @@
     &lt;p&gt;高内聚&lt;/p&gt;
 
     &lt;blockquote&gt;
-      &lt;p&gt;把逻辑紧密相关的内容放在一个组件中，react的JSX文件包含展示内容的html，定义行为的js和定义样式的css，天然具有高内聚的特点。&lt;/p&gt;
+      &lt;p&gt;把逻辑紧密相关的内容放在一个组件中，&lt;code class=&quot;highlighter-rouge&quot;&gt;react&lt;/code&gt;的&lt;code class=&quot;highlighter-rouge&quot;&gt;JSX&lt;/code&gt;文件包含展示内容的&lt;code class=&quot;highlighter-rouge&quot;&gt;html&lt;/code&gt;，定义行为的js和定义样式的&lt;code class=&quot;highlighter-rouge&quot;&gt;css&lt;/code&gt;，天然具有高内聚的特点。&lt;/p&gt;
     &lt;/blockquote&gt;
   &lt;/li&gt;
   &lt;li&gt;
@@ -57,7 +57,7 @@
         &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt; 支持&lt;code class=&quot;highlighter-rouge&quot;&gt;所有的JavaScript数据类型&lt;/code&gt; ¹。&lt;/p&gt;
       &lt;/li&gt;
       &lt;li&gt;
-        &lt;p&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;HTML元素&lt;/code&gt;属性的区别在于：HTML元素的所有属性的值都是字符串类型或布尔值 ²，即使是内嵌js代码，也是字符串形式的代码。&lt;/p&gt;
+        &lt;p&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;HTML元素&lt;/code&gt;属性的区别在于：&lt;code class=&quot;highlighter-rouge&quot;&gt;HTML&lt;/code&gt;元素的所有属性的值都是字符串类型或布尔值 ²，即使是内嵌js代码，也是字符串形式的代码。&lt;/p&gt;
       &lt;/li&gt;
       &lt;li&gt;
         &lt;p&gt;当&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;的值的类型不是字符串类型时，在&lt;code class=&quot;highlighter-rouge&quot;&gt;JSX&lt;/code&gt;中应该是使用&lt;code class=&quot;highlighter-rouge&quot;&gt;{}&lt;/code&gt;将&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;的值包住，所以我们常写的&lt;code class=&quot;highlighter-rouge&quot;&gt;style&lt;/code&gt;有两层&lt;code class=&quot;highlighter-rouge&quot;&gt;{}&lt;/code&gt;，外面一层代表&lt;code class=&quot;highlighter-rouge&quot;&gt;JSX&lt;/code&gt;的语法，里面一层表示属性值是一个对象常量。&lt;/p&gt;
@@ -85,10 +85,10 @@
 
     &lt;ul&gt;
       &lt;li&gt;
-        &lt;p&gt;组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;必须是一个JavaScript对象，所有需要存储的值都应该是&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;对象的属性对应的值。&lt;/p&gt;
+        &lt;p&gt;组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;必须是一个&lt;code class=&quot;highlighter-rouge&quot;&gt;JavaScript&lt;/code&gt;对象，所有需要存储的值都应该是&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;对象的属性对应的值。&lt;/p&gt;
       &lt;/li&gt;
       &lt;li&gt;
-        &lt;p&gt;定义&lt;code class=&quot;highlighter-rouge&quot;&gt;this.state&lt;/code&gt;时，如果要用到父组件的props中的数据但是不确定该prop是否存在，可以使用defaultProps给字段赋上默认值。&lt;/p&gt;
+        &lt;p&gt;定义&lt;code class=&quot;highlighter-rouge&quot;&gt;this.state&lt;/code&gt;时，如果要用到父组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;中的数据但是不确定该&lt;code class=&quot;highlighter-rouge&quot;&gt;prop&lt;/code&gt;是否存在，可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;defaultProps&lt;/code&gt;给字段赋上默认值。&lt;/p&gt;
 
         &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; &lt;span class=&quot;nx&quot;&gt;Counter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaultProps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
      &lt;span class=&quot;na&quot;&gt;initVal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
@@ -159,16 +159,207 @@ React严格定义了组件的生命周期，一般会经历以下三个过程：
 &lt;/blockquote&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;装载过程（Mount）,也就是把组件第一次在DOM树中渲染的过程；&lt;/li&gt;
-  &lt;li&gt;更新过程（Update）,组件被重新渲染的过程；&lt;/li&gt;
-  &lt;li&gt;卸载过程（Unmount）,组件从DOM中删除的过程。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;装载过程（Mount）,也就是把组件第一次在&lt;code class=&quot;highlighter-rouge&quot;&gt;DOM&lt;/code&gt;树中渲染的过程；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;更新过程（Update）,组件被重新渲染的过程；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;卸载过程（Unmount）,组件从&lt;code class=&quot;highlighter-rouge&quot;&gt;DOM&lt;/code&gt;中删除的过程。&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;在这三个不同的过程，React会依次调用组件的一些成员函数，这些成员函数也成为生命周期函数。&lt;/p&gt;
+&lt;p&gt;在这三个不同的过程，&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;会依次调用组件的一些成员函数，这些成员函数也成为生命周期函数。&lt;/p&gt;
+
+&lt;h4&gt;1. 装载过程&lt;/h4&gt;
+
+&lt;p&gt;(1) &lt;code class=&quot;highlighter-rouge&quot;&gt;constructor&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;不是所有React组件都需要定义构造函数，定义构造函数一般是出于以下目的：&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;装载过程&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;初始化&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;绑定成员函数的this环境&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;(2) &lt;code class=&quot;highlighter-rouge&quot;&gt;getInitialState&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;getDefaultProps&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;这两个方法只有在使用&lt;code class=&quot;highlighter-rouge&quot;&gt;React.creatClass&lt;/code&gt;创建组件时才会生效，&lt;code class=&quot;highlighter-rouge&quot;&gt;getInitialState&lt;/code&gt;这个函数的返回值会用来初始化&lt;code class=&quot;highlighter-rouge&quot;&gt;this.state&lt;/code&gt;,&lt;code class=&quot;highlighter-rouge&quot;&gt;getDefaultProps&lt;/code&gt;这个函数的返回值会用来初始化&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;。&lt;code class=&quot;highlighter-rouge&quot;&gt;React.createClass&lt;/code&gt;已经被官方逐渐废弃，建议不要再使用。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;getInitialState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'bar'&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;getDefaultProps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;na&quot;&gt;sampleProp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ES6写法&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Sample&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+      &lt;span class=&quot;kd&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;na&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'bar'&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;Sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;defaultProps&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;sampleProp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(3) &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;组件中最重要的函数，必须写，其他生命周期函数在&lt;code class=&quot;highlighter-rouge&quot;&gt;React.component&lt;/code&gt;中都有默认实现。&lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;函数不做实际的渲染动作，它只返回一个使用&lt;code class=&quot;highlighter-rouge&quot;&gt;JSX&lt;/code&gt;描述的结构，由&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;完成渲染过程。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;是一个纯函数，它只根据&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;来决定返回结果，不能产生任何副作用。如果在某些情况下一些组件没有需要显示的&lt;code class=&quot;highlighter-rouge&quot;&gt;DOM&lt;/code&gt;元素，&lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;也可以返回&lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt;或者&lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;(4)  &lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillMount&lt;/code&gt; 和  &lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidMount&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillMount&lt;/code&gt; 会在  &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt; 之前调用， &lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidMount&lt;/code&gt; 会在  &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt; 之后调用。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;一般我们不会用到 &lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillMount&lt;/code&gt; 函数，因为这个时候还没有任何渲染结果，调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;this.setState&lt;/code&gt; 也不会触发重新绘制，所有你想在  &lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillMount &lt;/code&gt; 里做的事情，都可以提前放到  &lt;code class=&quot;highlighter-rouge&quot;&gt;constructor&lt;/code&gt; 里面去做。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在 &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt; 调用完后，&lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidMount&lt;/code&gt; 并不会马上被调用，而是等DOM元素渲染完成才会去调用。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillMount&lt;/code&gt;既可以在服务器端被调用，也可以在浏览器端被调用；&lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidMount&lt;/code&gt;只能在浏览器端被调用。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;你可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidMount&lt;/code&gt;里面去请求数据操作并更新&lt;code class=&quot;highlighter-rouge&quot;&gt;DOM&lt;/code&gt;，因为这时候虚拟&lt;code class=&quot;highlighter-rouge&quot;&gt;DOM&lt;/code&gt;元素已经挂载到真实&lt;code class=&quot;highlighter-rouge&quot;&gt;DOM&lt;/code&gt;了。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;2. 更新过程&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;当组件被挂载到DOM树上之后，组件需要根据用户的操作实时更新界面以达到良好的用户体验，当props或者state发生改变时，就会引发组件的更新过程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;(1) &lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillReceiveProps(nextProps)&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;只要父组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;函数被调用，在&lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;函数里面被渲染的子组件就会经历更新过程，不管父组件传递给子组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;有没有发生变化，都会触发子组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillReceiveProps&lt;/code&gt;函数。&lt;br /&gt;&lt;br /&gt;&lt;/li&gt;
+  &lt;li&gt;组件内部通过&lt;code class=&quot;highlighter-rouge&quot;&gt;this.setState&lt;/code&gt;方法更新&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;，不会触发这个方法，因为这个方法是根据新的&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;也就是参数&lt;code class=&quot;highlighter-rouge&quot;&gt;nextProps&lt;/code&gt;去计算出是否需要更新内部状态&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;的，如果&lt;code class=&quot;highlighter-rouge&quot;&gt;this.setState&lt;/code&gt;能触发该方法的话那将会导致死循环。&lt;br /&gt;&lt;br /&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;每个&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;组件都可以通过调用&lt;code class=&quot;highlighter-rouge&quot;&gt;forceUpdate&lt;/code&gt;强制触发一次重绘。&lt;/p&gt;
+
+    &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;onClick&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forceUpdate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+              &lt;span class=&quot;nx&quot;&gt;click&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;me&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;repaint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/button&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/div&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;)
+&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;(2) &lt;code class=&quot;highlighter-rouge&quot;&gt;shouldComponentUpdate(nextProps,nextState)&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;shouldComponentUpdate&lt;/code&gt; 函数返回一个布尔值，它告诉&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;，当前这个组件在这次更新过程是否需要继续，它决定了一个组件什么时候不需要渲染，默认返回&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;通过&lt;code class=&quot;highlighter-rouge&quot;&gt;this.setState&lt;/code&gt;方法引发的更新过程，不会立即更新组件的&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;值，在&lt;code class=&quot;highlighter-rouge&quot;&gt;shouldComponentUpdate&lt;/code&gt;方法里面，&lt;code class=&quot;highlighter-rouge&quot;&gt;this.state&lt;/code&gt;仍然是&lt;code class=&quot;highlighter-rouge&quot;&gt;this.setState&lt;/code&gt;之前的&lt;code class=&quot;highlighter-rouge&quot;&gt;state&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;this.props&lt;/code&gt;也是原来的&lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;，我们要做的就是根据参数&lt;code class=&quot;highlighter-rouge&quot;&gt;nextState&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;nextProps&lt;/code&gt;和原本的&lt;code class=&quot;highlighter-rouge&quot;&gt;this.state&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;this.props&lt;/code&gt;去做比较，决定是不是应该触发组件的重新渲染。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;应该谨慎使用这个方法，除非真的遇到性能瓶颈。这个方法可能带来一些诡异的错误和逻辑混乱。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;(3) &lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillUpdate&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidUpdate&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果&lt;code class=&quot;highlighter-rouge&quot;&gt;shouldComponentUpdate&lt;/code&gt; 函数返回&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;，React接下来会依次调用&lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillUpdate&lt;/code&gt; 、&lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;和 &lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidUpdate&lt;/code&gt;。如果返回&lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;，这三个方法则被忽略。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;和装载过程不同，无论更新过程发生在浏览器端还是服务端，&lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidUpdate&lt;/code&gt;都会被调用。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;一般在服务端不会经历更新过程，因为服务端只需要产出&lt;code class=&quot;highlighter-rouge&quot;&gt;HTML&lt;/code&gt;字符串，在装载过程就已经完成了。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;3. 卸载过程&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;卸载过程只涉及一个&lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillUnmount&lt;/code&gt;函数，当React组件要从DOM树上删除掉之前，该函数就会被调用，我们一般在里面做一些清理工作。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillUnmount&lt;/code&gt;的使用往往和&lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidMount&lt;/code&gt;有关，比如在&lt;code class=&quot;highlighter-rouge&quot;&gt;componentDidMount&lt;/code&gt;中使用非&lt;code class=&quot;highlighter-rouge&quot;&gt;React&lt;/code&gt;方法创建了一些&lt;code class=&quot;highlighter-rouge&quot;&gt;DOM&lt;/code&gt;元素，需要在&lt;code class=&quot;highlighter-rouge&quot;&gt;componentWillUnmount&lt;/code&gt;清理掉，否则可能造成内存泄漏。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;4. React组件中state和props的局限&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;假设有一个这样的场景：有一个展示计数的组件controlPanel用于记录所有子组件传过来的数值之和，它包含三个单独的计数组件counter，每一个counter有自己的状态记录自己的数值，绑定了点击事件用于对自身的数值进行增减改变，然后通过props函数通知父组件数据发生变化，父组件更新展示结果。父组件也有一个状态用于初始化展示的值。&lt;br /&gt;&lt;br /&gt;
+然后一个子组件的点击事件出现了bug，导致各个子组件的值相加，不等于父组件展示的值。这个时候就很难抉择是相信子组件还是相信父组件了。&lt;br /&gt;&lt;br /&gt;
+除了state，使用props在组件之间传递信息也会遇到问题。如果在一个应用中包含三级或者三级以上的组件解构，顶层的祖父组件需要传递一个数据给底层的子组件，利用props的话就只能通过父组件中转，而父组件可能根本就用不上这个数据，但依然需要支持这个prop。这就违背了低耦合的设计要求。&lt;br /&gt;&lt;br /&gt;
+为了解决这两个问题，我们就需要设计一个在React组件之外的全局共享的共享数据，让各个组件保持和全局一致的状态，这就是Flux和Redux中Store的概念。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;br /&gt;小结：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;ol&gt;
+      &lt;li&gt;以高内聚低耦合为目标&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;ol&gt;
+      &lt;li&gt;保证组件对外接口清晰简洁&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;ol&gt;
+      &lt;li&gt;明确使用props还是state&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;ol&gt;
+      &lt;li&gt;在合适的生命周期方法做合适的事情&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;ol&gt;
+      &lt;li&gt;多层级的复杂组件应该使用更合理的数据交互方式，如Redux&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;本文主要参考《深入浅出React和Redux》一书，以下标注代表阅读时发现的一些错误指正： &lt;br /&gt;

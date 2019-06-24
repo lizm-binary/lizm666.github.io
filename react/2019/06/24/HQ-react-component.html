@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>如何设计高质量的React组件</title>
+    <link rel="stylesheet" href="/lib/animate.css/animate.css">
+    <link rel="stylesheet" href="/assets/css/md-wrap.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+
+<div class="nav">
+	<div style="display: inline-block;float: left;margin-left: 80px;height: 80px;line-height: 80px;color: #fff;font-size: 22px;">
+		广告位招租
+	</div>
+    <ul>
+        
+        <li><a href="/" >Home</a></li>
+        
+        <li><a href="/about.html" >About</a></li>
+        
+    </ul>
+</div>
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>Title</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+
+
+<script src=""></script>
+</body>
+
+<div class="container">
+    <div class="post bounceInUp animated">
+        <div class="header">
+            <div class="title">如何设计高质量的React组件</div>
+            <div class="info">
+                <span class="view-count">9812</span>
+                <span class="dot">·</span>
+                <span class="date">2019-06-24</span>
+                <span class="dot">·</span>
+                <span class="author">lizm</span>
+            </div>
+        </div>
+        
+<div class="music-box">
+    <div class="music-name-author">
+        ♬：<span>情深深雨蒙蒙-杨胖雨</span>
+    </div>
+    <video controls="" autoplay="" name="media" loop="">
+        <source src="http://127.0.0.1:4000/assets/music/qingshenshenyumengmeng.mp3" type="audio/mp4">
+    </video>
+</div>
+
+        <div class="content post-content"><h3>1. 易于维护的组件应该遵循哪些设计原则</h3>
+
+<ul>
+  <li>
+    <p>职责单一原则</p>
+
+    <blockquote>
+      <p>尽量保持一个组件只做一件事情。如果发现一个组件功能太多代码量很大时，应该考虑拆分这个组件，用多个小组件来代替。这就是“分而治之”的策略，把问题分成多个小问题，这样既容易解决也方便维护；但是不能滥用，只有真的有必要拆分组件时才去拆分，否则将得不偿失。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>明确组件边界</p>
+
+    <blockquote>
+      <p>拆分组件的关键就是确定组件的边界，每个组件都用该是独立存在的，如果两个组件的逻辑联系紧密，无法清晰定义各自的职责，那也许这两个组件就不该拆开，作为同一个组件也许更合理。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>高内聚</p>
+
+    <blockquote>
+      <p>把逻辑紧密相关的内容放在一个组件中，<code class="highlighter-rouge">react</code>的<code class="highlighter-rouge">JSX</code>文件包含展示内容的<code class="highlighter-rouge">html</code>，定义行为的js和定义样式的<code class="highlighter-rouge">css</code>，天然具有高内聚的特点。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>低耦合</p>
+
+    <blockquote>
+      <p>不同组件之间的依赖关系要尽量弱化，也就是每个组件要尽量独立。组件之间做到低耦才能使整个系统低耦合，这一点需要开发者对系统的功能有充分的辨识度，然后根据功能点划分出合理的模块，让不同组件去完成不同的功能。</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h3>2. 如何设计React组件的数据</h3>
+
+<blockquote>
+  <p>差劲的程序员操心代码，优秀的程序员操心数据结构和它们之间的关系。（Linux创始人：<code class="highlighter-rouge">Linus Torvalds</code>）</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">props</code> 还是 <code class="highlighter-rouge">state</code></p>
+
+    <blockquote>
+      <p>无论是<code class="highlighter-rouge">props</code>还是<code class="highlighter-rouge">state</code>发生改变，都将可能引起组件的重新渲染，设计一个组件时，什么时候需要用到<code class="highlighter-rouge">props</code>什么时候需要用到<code class="highlighter-rouge">state</code>？答案是：对外使用<code class="highlighter-rouge">props</code>，对内使用<code class="highlighter-rouge">state</code>。<code class="highlighter-rouge">props</code>是组件的对外接口，<code class="highlighter-rouge">state</code>是组件自身的内部状态。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>关于 <code class="highlighter-rouge">props</code></p>
+
+    <blockquote>
+      <p><code class="highlighter-rouge">props</code> 是外部传递给组件的数据，一个React组件通过定义自己能够接收的<code class="highlighter-rouge">props</code>从而决定自身对外部暴露的接口，<code class="highlighter-rouge">props</code>一般在组件的整个生命周期中都是只读的。</p>
+    </blockquote>
+
+    <ul>
+      <li>
+        <p><code class="highlighter-rouge">props</code> 支持<code class="highlighter-rouge">所有的JavaScript数据类型</code> ¹。</p>
+      </li>
+      <li>
+        <p>与<code class="highlighter-rouge">HTML元素</code>属性的区别在于：<code class="highlighter-rouge">HTML</code>元素的所有属性的值都是字符串类型或布尔值 ²，即使是内嵌js代码，也是字符串形式的代码。</p>
+      </li>
+      <li>
+        <p>当<code class="highlighter-rouge">props</code>的值的类型不是字符串类型时，在<code class="highlighter-rouge">JSX</code>中应该是使用<code class="highlighter-rouge">{}</code>将<code class="highlighter-rouge">props</code>的值包住，所以我们常写的<code class="highlighter-rouge">style</code>有两层<code class="highlighter-rouge">{}</code>，外面一层代表<code class="highlighter-rouge">JSX</code>的语法，里面一层表示属性值是一个对象常量。</p>
+      </li>
+      <li>
+        <p>React组件通过props接收外部数据，同样也是通过<code class="highlighter-rouge">props</code>向外部传递数据的，当<code class="highlighter-rouge">props的类型是函数</code>时，相当于父组件交给子组件一个回调函数，子组件在恰当的时候调用该函数，函数接收相关的参数，就能把相关的数据传递到外部了。</p>
+      </li>
+      <li>
+        <p>如果在组件中想要通过<code class="highlighter-rouge">this.props</code>访问父组件传递过来的<code class="highlighter-rouge">props</code>数据，必须在<code class="highlighter-rouge">constructor</code>方法内调用 <code class="highlighter-rouge">super(props)</code>。</p>
+      </li>
+      <li>
+        <p>开发调试时，可以通过定义组件的<code class="highlighter-rouge">propTypes</code>来对<code class="highlighter-rouge">props</code>数据进行检查，<code class="highlighter-rouge">propTypes</code>是辅助开发的功能，不会改变组件的行为。生产代码应该去掉<code class="highlighter-rouge">propTypes</code>检查代码，应为这些输出的信息对于用户来说是没有意义的。可以使用<code class="highlighter-rouge">babel-react-optimize</code>插件通过<code class="highlighter-rouge">webpack</code>打包时配置在生产配置中。</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">this.props.children</code>包含本组件实例下的所有子组件，由<code class="highlighter-rouge">React</code>自动填充。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>关于<code class="highlighter-rouge">state</code></p>
+
+    <blockquote>
+      <p><code class="highlighter-rouge">React</code> 组件不能修改传入的<code class="highlighter-rouge">props</code>，如果需要记录自身相关的一些数据变化，那么就需要定义<code class="highlighter-rouge">state</code>。</p>
+    </blockquote>
+
+    <ul>
+      <li>
+        <p>组件的<code class="highlighter-rouge">state</code>必须是一个<code class="highlighter-rouge">JavaScript</code>对象，所有需要存储的值都应该是<code class="highlighter-rouge">state</code>对象的属性对应的值。</p>
+      </li>
+      <li>
+        <p>定义<code class="highlighter-rouge">this.state</code>时，如果要用到父组件的<code class="highlighter-rouge">props</code>中的数据但是不确定该<code class="highlighter-rouge">prop</code>是否存在，可以使用<code class="highlighter-rouge">defaultProps</code>给字段赋上默认值。</p>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nx">Counter</span><span class="p">.</span><span class="nx">defaultProps</span><span class="o">=</span><span class="p">{</span>
+     <span class="na">initVal</span><span class="p">:</span><span class="mi">0</span>
+ <span class="p">}</span>
+ 
+ <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="na">count</span><span class="p">:</span><span class="nx">props</span><span class="p">.</span><span class="nx">initVal</span>
+ <span class="p">}</span>
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>只能通过<code class="highlighter-rouge">this.setState(data,callback)</code>合并<code class="highlighter-rouge">data</code>到<code class="highlighter-rouge">this.state</code>中，<code class="highlighter-rouge">React</code>会自动触发组件重新渲染，渲染完成后，调用可选的<code class="highlighter-rouge">callback</code>回调调方法，大部分情况下不需要调用<code class="highlighter-rouge">callback</code>，因为<code class="highlighter-rouge">React</code>会自动更新视图。直接向<code class="highlighter-rouge">this.state</code>赋值虽然可以更新<code class="highlighter-rouge">state</code>，但是不会触发组件重新渲染，界面不会体现出数据更新，这样做往往导致意想不到的问题。</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">state</code> 的的设计原则 ³</p>
+
+    <ul>
+      <li>
+        <p>组件大部分的原始数据应该来源于<code class="highlighter-rouge">props</code>，只有对用户输入、服务器请求、时间变化等需要作出界面视图相应并暂存中间状态时，才需要使用<code class="highlighter-rouge">state</code>记录。</p>
+      </li>
+      <li>
+        <p>组件应该尽可能地无状态化，这样可以减少冗余，同时可以使程序的运作过程更清晰。常见的模式是创建多个只负责渲染数据的无状态（<code class="highlighter-rouge">stateless</code>）组件，在他们的上层再创建一个有状态（<code class="highlighter-rouge">stateful</code>）组件，并把它的状态通过<code class="highlighter-rouge">props</code>传递给子组件。这个有状态的的组件封装了所有用户的交互逻辑，这其下面的无状态组件则只负责声名式地渲染数据。</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">state</code>应该只包括可能被组件的事件处理器改变并触发用户界面更新的最小数据集合。</p>
+      </li>
+      <li>
+        <p>以下几种数据不应该包含在<code class="highlighter-rouge">state</code>中:</p>
+
+        <ul>
+          <li>
+            <p>计算所得数据：没有必要把计算所得的数据放在<code class="highlighter-rouge">state</code>中，把计算过程都放在<code class="highlighter-rouge">render()</code>里更容易保证用户界面和数据的一致性。</p>
+          </li>
+          <li>
+            <p><code class="highlighter-rouge">React</code>组件：<code class="highlighter-rouge">React</code>组件应该只在<code class="highlighter-rouge">render()</code>里创建</p>
+          </li>
+          <li>
+            <p>基于<code class="highlighter-rouge">props</code>的重复数据：尽可能使用<code class="highlighter-rouge">props</code>作为唯一数据来源。有时候可以把<code class="highlighter-rouge">props</code>保存到<code class="highlighter-rouge">state</code>中，比如在渲染时需要知道它以前的<code class="highlighter-rouge">props</code>值，以进行对比。</p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>对比<code class="highlighter-rouge">props</code>和<code class="highlighter-rouge">state</code></p>
+
+    <ul>
+      <li>
+        <p><code class="highlighter-rouge">props</code>用户定义外部接口，<code class="highlighter-rouge">state</code>用于记录内部状态</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">props</code>的赋值在外部使用组件时发生，<code class="highlighter-rouge">state</code>的赋值在组件内部定义</p>
+      </li>
+      <li>
+        <p>组件不应该修改<code class="highlighter-rouge">props</code>的值，而<code class="highlighter-rouge">state</code>就是为了让组件来改变以更新视图的</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3>3. 组件生命周期</h3>
+
+<blockquote>
+  <p>想搞清楚React的工作过程，首先就得搞清楚React的生命周期，即一个React组件从创建到销毁一般会经历哪些过程，在合适的步骤做合适的事情，才能让React发挥出其最大的优势，设计好一个React组件，离不开定制其生命周期函数。<br />
+React严格定义了组件的生命周期，一般会经历以下三个过程：</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>装载过程（Mount）,也就是把组件第一次在<code class="highlighter-rouge">DOM</code>树中渲染的过程；</p>
+  </li>
+  <li>
+    <p>更新过程（Update）,组件被重新渲染的过程；</p>
+  </li>
+  <li>
+    <p>卸载过程（Unmount）,组件从<code class="highlighter-rouge">DOM</code>中删除的过程。<br /><br /></p>
+  </li>
+</ul>
+
+<p>在这三个不同的过程，<code class="highlighter-rouge">React</code>会依次调用组件的一些成员函数，这些成员函数也成为生命周期函数。</p>
+
+<h4>1. 装载过程</h4>
+
+<p>(1) <code class="highlighter-rouge">constructor</code></p>
+
+<blockquote>
+  <p>不是所有React组件都需要定义构造函数，定义构造函数一般是出于以下目的：</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>初始化<code class="highlighter-rouge">state</code></p>
+  </li>
+  <li>
+    <p>绑定成员函数的this环境</p>
+  </li>
+</ul>
+
+<p>(2) <code class="highlighter-rouge">getInitialState</code> 和 <code class="highlighter-rouge">getDefaultProps</code></p>
+
+<blockquote>
+  <p>这两个方法只有在使用<code class="highlighter-rouge">React.creatClass</code>创建组件时才会生效，<code class="highlighter-rouge">getInitialState</code>这个函数的返回值会用来初始化<code class="highlighter-rouge">this.state</code>,<code class="highlighter-rouge">getDefaultProps</code>这个函数的返回值会用来初始化<code class="highlighter-rouge">props</code>。<code class="highlighter-rouge">React.createClass</code>已经被官方逐渐废弃，建议不要再使用。</p>
+</blockquote>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">const</span> <span class="nx">sample</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+      <span class="na">getInitialState</span><span class="p">:</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">{</span>
+            <span class="na">foo</span><span class="p">:</span><span class="s1">'bar'</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="na">getDefaultProps</span><span class="p">:</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          <span class="k">return</span><span class="p">{</span>
+              <span class="na">sampleProp</span><span class="p">:</span><span class="mi">1</span>
+          <span class="p">}</span>
+      <span class="p">}</span>
+  <span class="p">})</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>ES6写法</p>
+</blockquote>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nx">Sample</span> <span class="kd">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">component</span><span class="p">({</span>
+      <span class="kd">constructor</span><span class="p">(</span><span class="nx">props</span><span class="p">){</span>
+          <span class="k">super</span><span class="p">(</span><span class="nx">props</span><span class="p">);</span>
+          <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="o">=</span><span class="p">{</span>
+              <span class="na">foo</span><span class="p">:</span><span class="s1">'bar'</span>
+          <span class="p">}</span>
+      <span class="p">}</span>
+  <span class="p">});</span>
+  <span class="nx">Sample</span><span class="p">.</span><span class="nx">defaultProps</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">sampleProp</span><span class="p">:</span><span class="mi">1</span>
+  <span class="p">}</span>
+</code></pre></div></div>
+
+<p>(3) <code class="highlighter-rouge">render</code></p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">React</code>组件中最重要的函数，必须写，其他生命周期函数在<code class="highlighter-rouge">React.component</code>中都有默认实现。<code class="highlighter-rouge">render</code>函数不做实际的渲染动作，它只返回一个使用<code class="highlighter-rouge">JSX</code>描述的结构，由<code class="highlighter-rouge">React</code>完成渲染过程。</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">render</code>是一个纯函数，它只根据<code class="highlighter-rouge">state</code>和<code class="highlighter-rouge">props</code>来决定返回结果，不能产生任何副作用。如果在某些情况下一些组件没有需要显示的<code class="highlighter-rouge">DOM</code>元素，<code class="highlighter-rouge">render</code>也可以返回<code class="highlighter-rouge">null</code>或者<code class="highlighter-rouge">false</code>。</p>
+  </li>
+</ul>
+
+<p>(4)  <code class="highlighter-rouge">componentWillMount</code> 和  <code class="highlighter-rouge">componentDidMount</code></p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">componentWillMount</code> 会在  <code class="highlighter-rouge">render</code> 之前调用， <code class="highlighter-rouge">componentDidMount</code> 会在  <code class="highlighter-rouge">render</code> 之后调用。</p>
+  </li>
+  <li>
+    <p>一般我们不会用到 <code class="highlighter-rouge">componentWillMount</code> 函数，因为这个时候还没有任何渲染结果，调用 <code class="highlighter-rouge">this.setState</code> 也不会触发重新绘制，所有你想在  <code class="highlighter-rouge">componentWillMount </code> 里做的事情，都可以提前放到  <code class="highlighter-rouge">constructor</code> 里面去做。</p>
+  </li>
+  <li>
+    <p>在 <code class="highlighter-rouge">render</code> 调用完后，<code class="highlighter-rouge">componentDidMount</code> 并不会马上被调用，而是等DOM元素渲染完成才会去调用。</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">componentWillMount</code>既可以在服务器端被调用，也可以在浏览器端被调用；<code class="highlighter-rouge">componentDidMount</code>只能在浏览器端被调用。</p>
+  </li>
+  <li>
+    <p>你可以在<code class="highlighter-rouge">componentDidMount</code>里面去请求数据操作并更新<code class="highlighter-rouge">DOM</code>，因为这时候虚拟<code class="highlighter-rouge">DOM</code>元素已经挂载到真实<code class="highlighter-rouge">DOM</code>了。</p>
+  </li>
+</ul>
+
+<h4>2. 更新过程</h4>
+
+<blockquote>
+  <p>当组件被挂载到DOM树上之后，组件需要根据用户的操作实时更新界面以达到良好的用户体验，当props或者state发生改变时，就会引发组件的更新过程。</p>
+</blockquote>
+
+<p>(1) <code class="highlighter-rouge">componentWillReceiveProps(nextProps)</code></p>
+
+<ul>
+  <li>只要父组件的<code class="highlighter-rouge">render</code>函数被调用，在<code class="highlighter-rouge">render</code>函数里面被渲染的子组件就会经历更新过程，不管父组件传递给子组件的<code class="highlighter-rouge">props</code>有没有发生变化，都会触发子组件的<code class="highlighter-rouge">componentWillReceiveProps</code>函数。<br /><br /></li>
+  <li>组件内部通过<code class="highlighter-rouge">this.setState</code>方法更新<code class="highlighter-rouge">state</code>，不会触发这个方法，因为这个方法是根据新的<code class="highlighter-rouge">props</code>也就是参数<code class="highlighter-rouge">nextProps</code>去计算出是否需要更新内部状态<code class="highlighter-rouge">state</code>的，如果<code class="highlighter-rouge">this.setState</code>能触发该方法的话那将会导致死循环。<br /><br /></li>
+  <li>
+    <p>每个<code class="highlighter-rouge">React</code>组件都可以通过调用<code class="highlighter-rouge">forceUpdate</code>强制触发一次重绘。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nx">render</span><span class="p">(){</span>
+      <span class="k">return</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">button</span> <span class="nx">onClick</span><span class="o">=</span><span class="p">{()</span><span class="o">=&gt;</span><span class="k">this</span><span class="p">.</span><span class="nx">forceUpdate</span><span class="p">()}</span><span class="o">&gt;</span>
+              <span class="nx">click</span> <span class="nx">me</span> <span class="nx">to</span> <span class="nx">repaint</span><span class="o">!</span>
+          <span class="o">&lt;</span><span class="sr">/button</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div&gt;</span><span class="err">)
+</span>  <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>(2) <code class="highlighter-rouge">shouldComponentUpdate(nextProps,nextState)</code></p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">shouldComponentUpdate</code> 函数返回一个布尔值，它告诉<code class="highlighter-rouge">React</code>，当前这个组件在这次更新过程是否需要继续，它决定了一个组件什么时候不需要渲染，默认返回<code class="highlighter-rouge">true</code>。</p>
+  </li>
+  <li>
+    <p>通过<code class="highlighter-rouge">this.setState</code>方法引发的更新过程，不会立即更新组件的<code class="highlighter-rouge">state</code>值，在<code class="highlighter-rouge">shouldComponentUpdate</code>方法里面，<code class="highlighter-rouge">this.state</code>仍然是<code class="highlighter-rouge">this.setState</code>之前的<code class="highlighter-rouge">state</code>，<code class="highlighter-rouge">this.props</code>也是原来的<code class="highlighter-rouge">props</code>，我们要做的就是根据参数<code class="highlighter-rouge">nextState</code>、<code class="highlighter-rouge">nextProps</code>和原本的<code class="highlighter-rouge">this.state</code>、<code class="highlighter-rouge">this.props</code>去做比较，决定是不是应该触发组件的重新渲染。</p>
+  </li>
+  <li>
+    <p>应该谨慎使用这个方法，除非真的遇到性能瓶颈。这个方法可能带来一些诡异的错误和逻辑混乱。</p>
+  </li>
+</ul>
+
+<p>(3) <code class="highlighter-rouge">componentWillUpdate</code> 和 <code class="highlighter-rouge">componentDidUpdate</code></p>
+
+<ul>
+  <li>
+    <p>如果<code class="highlighter-rouge">shouldComponentUpdate</code> 函数返回<code class="highlighter-rouge">true</code>，React接下来会依次调用<code class="highlighter-rouge">componentWillUpdate</code> 、<code class="highlighter-rouge">render</code>和 <code class="highlighter-rouge">componentDidUpdate</code>。如果返回<code class="highlighter-rouge">false</code>，这三个方法则被忽略。</p>
+  </li>
+  <li>
+    <p>和装载过程不同，无论更新过程发生在浏览器端还是服务端，<code class="highlighter-rouge">componentDidUpdate</code>都会被调用。</p>
+  </li>
+  <li>
+    <p>一般在服务端不会经历更新过程，因为服务端只需要产出<code class="highlighter-rouge">HTML</code>字符串，在装载过程就已经完成了。</p>
+  </li>
+</ul>
+
+<h4>3. 卸载过程</h4>
+
+<blockquote>
+  <p>卸载过程只涉及一个<code class="highlighter-rouge">componentWillUnmount</code>函数，当React组件要从DOM树上删除掉之前，该函数就会被调用，我们一般在里面做一些清理工作。</p>
+</blockquote>
+
+<ul>
+  <li><code class="highlighter-rouge">componentWillUnmount</code>的使用往往和<code class="highlighter-rouge">componentDidMount</code>有关，比如在<code class="highlighter-rouge">componentDidMount</code>中使用非<code class="highlighter-rouge">React</code>方法创建了一些<code class="highlighter-rouge">DOM</code>元素，需要在<code class="highlighter-rouge">componentWillUnmount</code>清理掉，否则可能造成内存泄漏。</li>
+</ul>
+
+<h3>4. React组件中state和props的局限</h3>
+
+<blockquote>
+  <p>假设有一个这样的场景：有一个展示计数的组件controlPanel用于记录所有子组件传过来的数值之和，它包含三个单独的计数组件counter，每一个counter有自己的状态记录自己的数值，绑定了点击事件用于对自身的数值进行增减改变，然后通过props函数通知父组件数据发生变化，父组件更新展示结果。父组件也有一个状态用于初始化展示的值。<br /><br />
+然后一个子组件的点击事件出现了bug，导致各个子组件的值相加，不等于父组件展示的值。这个时候就很难抉择是相信子组件还是相信父组件了。<br /><br />
+除了state，使用props在组件之间传递信息也会遇到问题。如果在一个应用中包含三级或者三级以上的组件解构，顶层的祖父组件需要传递一个数据给底层的子组件，利用props的话就只能通过父组件中转，而父组件可能根本就用不上这个数据，但依然需要支持这个prop。这就违背了低耦合的设计要求。<br /><br />
+为了解决这两个问题，我们就需要设计一个在React组件之外的全局共享的共享数据，让各个组件保持和全局一致的状态，这就是Flux和Redux中Store的概念。</p>
+</blockquote>
+
+<p><br />小结：</p>
+
+<ul>
+  <li>
+    <ol>
+      <li>以高内聚低耦合为目标</li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>保证组件对外接口清晰简洁</li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>明确使用props还是state</li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>在合适的生命周期方法做合适的事情</li>
+    </ol>
+  </li>
+  <li>
+    <ol>
+      <li>多层级的复杂组件应该使用更合理的数据交互方式，如Redux</li>
+    </ol>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<blockquote>
+  <p>本文主要参考《深入浅出React和Redux》一书，以下标注代表阅读时发现的一些错误指正： <br />
+① 原书说 props 支持除了字符串以外的所有js数据类型，字符串也是支持的，所以是支持所有的js数据类型。<br />
+② 原书说 HTML 元素的所有属性值都是字符串，也可以是布尔类型。<br />
+③ 参考《React 前端技术与工程实践》一书。</p>
+</blockquote>
+</div>
+    </div>
+    <div class="sidebar-list">
+        <div class="tag-cloud">
+    <ul>
+        <li>JavaScript</li>
+        <li>Node.js</li>
+        <li>Vue</li>
+        <li>React</li>
+        <li>Koa2</li>
+        <li>Webpack</li>
+        <li>TypeScript</li>
+        <li>Express</li>
+    </ul>
+</div>
+        <div class="search-box">
+    <div class="search-holder">
+        <input class="search-input" type="text" placeholder="没事别瞎点搜索">
+    </div>
+</div>
+        <div class="blog-author">
+    <div class="avatar">
+        <img src="/assets/images/avatar/dfyc.jpeg" alt="" width="160">
+    </div>
+    <ul>
+        <li>昵称：lizm</li>
+        <li>性别：少年</li>
+        <li>生日：1993-03-29</li>
+        <li>签名：</li>
+        <li>hahaahahhahahahahahaahahhahahaahah</li>
+    </ul>
+</div>
+        <div class="date-picker">
+    <link rel="stylesheet" href="/lib/calendar/css/calendar.css">
+    <script src="/lib/jquery/jquery-3.4.1.js"></script>
+    <script src="/lib/calendar/js/calendar.js"></script>
+    <div id="calendar" class="calendar"></div>
+</div>
+        <div class="hot-posts">
+
+</div>
+    </div>
+</div>
+</body>
+</html>
