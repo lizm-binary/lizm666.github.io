@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>深入理解ES6（一）</title>
+    <link rel="stylesheet" href="/lib/animate.css/animate.css">
+    <link rel="stylesheet" href="/assets/css/md-wrap.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+
+<div class="nav">
+	<div style="display: inline-block;float: left;margin-left: 80px;height: 80px;line-height: 80px;color: #fff;font-size: 22px;">
+		广告位招租
+	</div>
+    <ul>
+        
+        <li><a href="/" >Home</a></li>
+        
+        <li><a href="/about.html" >About</a></li>
+        
+    </ul>
+</div>
+<!DOCTYPE html>
+<html lang="zh">
+<!--[if IE 8]>
+<html class="no-js lt-ie9" lang="zh">
+<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <title>Title</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+
+
+<script src=""></script>
+</body>
+
+<div class="container">
+    <div class="post bounceInUp animated">
+        <div class="header">
+            <div class="title">深入理解ES6（一）</div>
+            <div class="info">
+                <span class="view-count">192</span>
+                <span class="dot">·</span>
+                <span class="date">2019-05-16</span>
+                <span class="dot">·</span>
+                <span class="author">lizm</span>
+            </div>
+        </div>
+        
+<div class="music-box">
+    <div class="music-name-author">
+        ♬：<span>岁月神偷-金玟岐</span>
+    </div>
+    <video controls="" autoplay="" name="media" loop="">
+        <source src="http://127.0.0.1:4000/assets/music/suiyueshentou.m4a" type="audio/mp4">
+    </video>
+</div>
+
+        <div class="content post-content"><p>ES6的注意点和一些使用技巧总结，第一篇包括临时死区，箭头函数，尾调用优化，解构。</p>
+
+<h3>1. 临时死区</h3>
+
+<p>（1）使用<code class="highlighter-rouge">let</code>和<code class="highlighter-rouge">const</code>声明的变量，不存在变量提升，如果在声明之前访问这些变量，即使使用相对安全的<code class="highlighter-rouge">typeof</code>操作符也会触发引用错误。因为此时被声明的变量还处于“临时死区”（temporal dead zone TDZ）中。ECMAScript中没有明确提出TDZ，但是人们常用它来描述<code class="highlighter-rouge">let</code>和<code class="highlighter-rouge">const</code>的不提升效果。</p>
+
+<ul>
+  <li>使用<code class="highlighter-rouge">const</code>声明的变量必须给定初始值，否则报错。</li>
+</ul>
+
+<p>（2）函数的默认参数也存在临时死区，即参数的默认值不可访问函数体内声明的变量。</p>
+
+<ul>
+  <li>
+    <p>如何理解？请看下面的代码：</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">add</span><span class="p">(</span><span class="nx">first</span><span class="o">=</span><span class="nx">second</span><span class="p">,</span> <span class="nx">second</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">first</span> <span class="o">+</span> <span class="nx">second</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span> <span class="c1">// 2</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">add</span><span class="p">(</span><span class="kc">undefined</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span> <span class="c1">// 抛出错误</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>第一个console很好理解，等同于如下代码：</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">first</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">second</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>第二个console等同于如下代码：</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">first</span> <span class="o">=</span> <span class="nx">second</span><span class="p">;</span> <span class="c1">// second 还未声明</span>
+<span class="kd">let</span> <span class="nx">second</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="c1">// 因为first的默认值是second，当first是undefined时，就会使用默认值second，</span>
+<span class="c1">// 而此时second还没声明，尚处于临时死区，所有引用临时死区中绑定的行为都会报错。</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3>2. 箭头函数</h3>
+
+<p>（1）箭头函数于传统 JavaScript 函数的区别</p>
+
+<ul>
+  <li>
+    <p>没有<code class="highlighter-rouge">this</code>,<code class="highlighter-rouge">super</code>,<code class="highlighter-rouge">arguments</code>和<code class="highlighter-rouge">new.target</code> 绑定，箭头函数中的<code class="highlighter-rouge">this</code>,<code class="highlighter-rouge">super</code>,<code class="highlighter-rouge">arguments</code>及<code class="highlighter-rouge">new.target</code>这些值由外围最近一层非箭头函数决定。</p>
+  </li>
+  <li>
+    <p>不能通过 <code class="highlighter-rouge">new</code> 关键字调用，箭头函数没有[[Construct]]方法，所以不支持被用作构造函数，使用<code class="highlighter-rouge">new</code>关键字调用会报错。</p>
+  </li>
+  <li>
+    <p>没有原型，因为不能通过<code class="highlighter-rouge">new</code>调用，所以没有原型，也不存在原型链，没有<code class="highlighter-rouge">prototype</code>属性。</p>
+  </li>
+  <li>
+    <p>无法改变<code class="highlighter-rouge">this</code>的绑定，函数内部的<code class="highlighter-rouge">this</code>值不能改变，在函数的生命周期内始终保持一致。</p>
+  </li>
+  <li>
+    <p>不支持<code class="highlighter-rouge">arguments</code>对象，箭头函数没有<code class="highlighter-rouge">arguments</code>绑定，只能通过命名参数和不定参数两种形式访问函数的参数。</p>
+  </li>
+  <li>
+    <p>不支持重复命名的参数，无论是在严格模式还是非严格模式，箭头函数都不允许重复命名参数，但是在传统函数中，只有在严格模式下才不允许重复命名参数。</p>
+  </li>
+</ul>
+
+<p>（2）语法</p>
+
+<ul>
+  <li>
+    <p>当箭头函数只有一个参数时，可以直接写参数名，箭头紧随其后，箭头右侧的表达式被求值后便立即返回。即使没有显示的返回语句，这个箭头函数也可以返回传入的第一个参数，不需要更多的语法铺垫。如果要传入两个及以上参数，需要在参数的两侧添加一对小括号( )。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">reflect</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">reflect</span> <span class="o">=</span> <span class="nx">value</span> <span class="o">=&gt;</span> <span class="nx">value</span><span class="p">;</span>
+     
+<span class="kd">let</span> <span class="nx">sum</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val1</span><span class="p">,</span> <span class="nx">val2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">val1</span> <span class="o">+</span> <span class="nx">val2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">sum</span> <span class="o">=</span> <span class="p">(</span><span class="nx">val1</span><span class="p">,</span><span class="nx">val2</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">val1</span> <span class="o">+</span> <span class="nx">val2</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>如果你想在函数提内添加更多的表达式语句，那么需要用一对花括号{ }包裹住函数体，并且显示地定义一个返回值。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">sum</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val1</span><span class="p">,</span> <span class="nx">val2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">val1</span> <span class="o">+</span> <span class="nx">val2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">sum</span> <span class="o">=</span> <span class="p">(</span><span class="nx">val1</span><span class="p">,</span> <span class="nx">val2</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">val1</span> <span class="o">+</span> <span class="nx">val2</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>如果想在箭头函数外返回一个对象字面量，需要将该字面量包裹在一对小括号( )内。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">getTempItem</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="na">id</span><span class="p">:</span><span class="nx">id</span><span class="p">,</span>
+        <span class="na">name</span><span class="p">:</span><span class="s1">'Temp'</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">getTempItem</span> <span class="o">=</span> <span class="nx">id</span> <span class="o">=&gt;</span><span class="p">({</span><span class="na">id</span><span class="p">:</span><span class="nx">id</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span><span class="s1">'temp'</span><span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3>3. 尾调用优化</h3>
+
+<p>（1）概念</p>
+
+<ul>
+  <li>
+    <p>尾调用指的是函数作为另外一个函数的最后一条语句被调用。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">function</span> <span class="nx">x</span><span class="p">()</span> <span class="p">{</span>
+     <span class="k">return</span> <span class="nx">doSomethingElse</span><span class="p">();</span> <span class="c1">// 尾调用</span>
+ <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>（2）存在的问题</p>
+
+<ul>
+  <li>在ES5的引擎中，尾调用的实现与其他函数调用的实现类似，都是创建一个新的栈帧（stack frame），将其推入调用栈来表示函数调用。那么就会存在一个问题，在循环调用中，每一个未用完的栈帧都会被保存在内存中，当调用栈变得过大时，往往会导致内存溢出。</li>
+</ul>
+
+<p>（3）尾调用优化</p>
+
+<ul>
+  <li>
+    <p>ES6 减小了严格模式下尾调用栈帧分配的大小，如果满足以下条件，尾调用将不再产生新的栈帧，而是清除当前栈帧并重用。</p>
+
+    <ul>
+      <li>尾调用不访问当前栈帧的变量，即函数不是一个闭包</li>
+      <li>在函数内部，尾调用是最后一条语句</li>
+      <li>尾调用的结果作为函数值返回   <br />
+<br /></li>
+    </ul>
+  </li>
+  <li>
+    <p>递归函数是尾调用优化的最常用的应用场景</p>
+  </li>
+</ul>
+
+<h3>4. 解构</h3>
+
+<p>（1）对象解构</p>
+
+<ul>
+  <li>
+    <p>使用解构赋值表达式时，如果指定的局部变量名称在对象中不存在，那么这个局部变量会被赋值为<code class="highlighter-rouge">undefind</code>。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">let</span> <span class="nx">student</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="na">name</span><span class="p">:</span><span class="s1">'lizm'</span><span class="p">,</span>
+     <span class="na">age</span><span class="p">:</span><span class="mi">18</span>
+ <span class="p">};</span>
+
+ <span class="kd">let</span> <span class="p">{</span><span class="nx">name</span><span class="p">,</span> <span class="nx">age</span><span class="p">,</span> <span class="nx">id</span><span class="p">}</span> <span class="o">=</span> <span class="nx">student</span><span class="p">;</span>
+ 
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span> <span class="c1">// lizm</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">age</span><span class="p">);</span>  <span class="c1">// 18</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>   <span class="c1">// undefind</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>当指定的属性不存在时，可以随意给定一个默认值，在属性名右边使用等号（=）赋值即可，只有当属性不存在时，默认赋值才会生效。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">let</span> <span class="nx">student</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="na">name</span><span class="p">:</span><span class="s1">'lizm'</span><span class="p">,</span>
+     <span class="na">age</span><span class="p">:</span><span class="mi">18</span>
+ <span class="p">};</span>
+
+ <span class="kd">let</span> <span class="p">{</span><span class="nx">name</span><span class="p">,</span> <span class="nx">age</span><span class="p">,</span> <span class="nx">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="nx">student</span><span class="p">;</span>
+ 
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span> <span class="c1">// lizm</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">age</span><span class="p">);</span>  <span class="c1">// 18</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">id</span><span class="p">);</span>   <span class="c1">// 1</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>给非同名变量赋值</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">let</span> <span class="nx">student</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="na">name</span><span class="p">:</span><span class="s1">'lizm'</span><span class="p">,</span>
+     <span class="na">age</span><span class="p">:</span><span class="mi">18</span>
+ <span class="p">};</span>
+
+ <span class="kd">let</span> <span class="p">{</span><span class="na">name</span><span class="p">:</span> <span class="nx">myName</span><span class="p">,</span> <span class="na">age</span><span class="p">:</span> <span class="nx">myAge</span><span class="p">,</span> <span class="na">id</span><span class="p">:</span> <span class="nx">myId</span> <span class="o">=</span> <span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="nx">student</span><span class="p">;</span>
+ 
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">myName</span><span class="p">);</span> <span class="c1">// lizm</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">myAge</span><span class="p">);</span>  <span class="c1">// 18</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">myId</span><span class="p">);</span>   <span class="c1">// 1</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>给同名变量赋值，需要使用一对小括号（）包裹起来</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">let</span> <span class="nx">student</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="na">name</span><span class="p">:</span><span class="s1">'lizm'</span><span class="p">,</span>
+     <span class="na">age</span><span class="p">:</span><span class="mi">18</span>
+ <span class="p">};</span>
+
+ <span class="kd">let</span> <span class="nx">name</span> <span class="o">=</span> <span class="s1">'John'</span><span class="p">,</span> <span class="nx">age</span> <span class="o">=</span> <span class="mi">19</span><span class="p">;</span>
+ 
+ <span class="p">({</span><span class="nx">name</span><span class="p">,</span> <span class="nx">age</span><span class="p">}</span> <span class="o">=</span> <span class="nx">student</span><span class="p">);</span>
+ 
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">name</span><span class="p">);</span> <span class="c1">// lizm</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">age</span><span class="p">);</span>  <span class="c1">// 18</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>（2）数组解构</p>
+
+<ul>
+  <li>
+    <p>缺省解构，如果你想只取第三个元素，那么前两个变量名缺省即可。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">let</span> <span class="nx">students</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'lizm'</span><span class="p">,</span><span class="s1">'Lily'</span><span class="p">,</span><span class="s1">'John'</span><span class="p">,</span><span class="s1">'Tom'</span><span class="p">];</span>
+
+ <span class="kd">let</span> <span class="p">[</span> <span class="p">,</span> <span class="p">,</span> <span class="nx">thirdStudent</span><span class="p">]</span> <span class="o">=</span> <span class="nx">students</span><span class="p">;</span>
+ 
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">thirdStudent</span><span class="p">);</span>   <span class="c1">// 'John'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>快速交换两个变量的值</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">// ES5</span>
+ <span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">temp</span><span class="p">;</span>
+ <span class="nx">temp</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+ <span class="nx">a</span> <span class="o">=</span> <span class="nx">b</span><span class="p">;</span>
+ <span class="nx">b</span> <span class="o">=</span> <span class="nx">temp</span><span class="p">;</span>
+ 
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>  <span class="c1">// 2</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>  <span class="c1">// 1</span>
+ 
+ <span class="c1">//ES6 数组解构</span>
+ <span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+ 
+ <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">b</span><span class="p">,</span> <span class="nx">a</span><span class="p">];</span>
+ 
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>  <span class="c1">// 2</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>  <span class="c1">// 1</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>默认值</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">let</span> <span class="nx">students</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'lizm'</span><span class="p">];</span>
+
+ <span class="kd">let</span> <span class="p">[</span> <span class="nx">firstStudent</span><span class="p">,</span> <span class="nx">secondStudent</span> <span class="o">=</span> <span class="s1">'John'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">students</span><span class="p">;</span>
+ 
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">firstStudent</span><span class="p">);</span>   <span class="c1">// 'lizm'</span>
+ <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">secondStudent</span><span class="p">);</span>   <span class="c1">// 'John'</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>（3）嵌套解构</p>
+
+<ul>
+  <li>
+    <p>嵌套对象解构</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">node</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span><span class="s1">'Identifier'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span><span class="s1">'foo'</span><span class="p">,</span>
+    <span class="na">loc</span><span class="p">:{</span>
+        <span class="na">start</span><span class="p">:{</span>
+            <span class="na">line</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+            <span class="na">column</span><span class="p">:</span><span class="mi">1</span>
+        <span class="p">},</span>
+        <span class="na">end</span><span class="p">:{</span>
+            <span class="na">line</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+            <span class="na">column</span><span class="p">:</span><span class="mi">4</span>            
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kd">let</span> <span class="p">{</span><span class="na">loc</span><span class="p">:{</span><span class="nx">start</span><span class="p">}}</span> <span class="o">=</span> <span class="nx">node</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">start</span><span class="p">.</span><span class="nx">line</span><span class="p">);</span>   <span class="c1">// 1</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">start</span><span class="p">.</span><span class="nx">column</span><span class="p">);</span> <span class="c1">// 1</span>
+
+<span class="c1">// 使用非同名变量解构</span>
+<span class="kd">let</span> <span class="p">{</span><span class="na">loc</span><span class="p">:{</span><span class="na">start</span><span class="p">:</span> <span class="nx">localStart</span><span class="p">}}</span> <span class="o">=</span> <span class="nx">node</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">localStart</span><span class="p">.</span><span class="nx">line</span><span class="p">);</span>   <span class="c1">// 1</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">localStart</span><span class="p">.</span><span class="nx">column</span><span class="p">);</span> <span class="c1">// 1</span>
+
+<span class="c1">// bad </span>
+<span class="kd">let</span> <span class="p">{</span><span class="na">loc</span><span class="p">:{}}</span> <span class="o">=</span> <span class="nx">node</span><span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>嵌套数组解构</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">students</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'lizm'</span><span class="p">,[</span><span class="s1">'Lily'</span><span class="p">,</span><span class="s1">'John'</span><span class="p">],</span><span class="s1">'Tom'</span><span class="p">];</span>
+
+<span class="kd">let</span> <span class="p">[</span> <span class="nx">firstStudent</span><span class="p">,</span> <span class="p">[</span><span class="nx">secondStudent</span><span class="p">]]</span> <span class="o">=</span> <span class="nx">students</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">firstStudent</span><span class="p">);</span>   <span class="c1">// 'lizm'</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">secondStudent</span><span class="p">);</span>   <span class="c1">// 'Lily'</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>（4）混合解构</p>
+
+<ul>
+  <li>
+    <p>对象和数组混合解构</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">node</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span><span class="s1">'Identifier'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span><span class="s1">'foo'</span><span class="p">,</span>
+    <span class="na">loc</span><span class="p">:{</span>
+        <span class="na">start</span><span class="p">:{</span>
+            <span class="na">line</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+            <span class="na">column</span><span class="p">:</span><span class="mi">1</span>
+        <span class="p">},</span>
+        <span class="na">end</span><span class="p">:{</span>
+            <span class="na">line</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+            <span class="na">column</span><span class="p">:</span><span class="mi">4</span>            
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="na">range</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="p">};</span>
+
+<span class="kd">let</span><span class="p">{</span>
+   <span class="na">loc</span><span class="p">:{</span><span class="nx">start</span><span class="p">},</span>
+   <span class="na">range</span><span class="p">:[,</span> <span class="nx">endIndex</span><span class="p">]</span>   
+<span class="p">}</span> <span class="o">=</span> <span class="nx">node</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">start</span><span class="p">.</span><span class="nx">line</span><span class="p">);</span>   <span class="c1">// 1</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">start</span><span class="p">.</span><span class="nx">column</span><span class="p">);</span>   <span class="c1">// 1</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">endIndex</span><span class="p">);</span>   <span class="c1">// 3</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>混合解构可以帮助你从数据节点中快速提取想要的信息，比如从JSON配置提取，不需要遍历整个结构。</p>
+  </li>
+</ul>
+
+<p>（5）解构参数</p>
+
+<ul>
+  <li>
+    <p>当定义一个接受大量参数的js函数时，我们通常会创建一个可选对象，将额外的参数定义为这个对象的属性：</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span> <span class="o">||</span> <span class="p">{};</span>
+    <span class="kd">let</span> <span class="nx">secure</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">secure</span><span class="p">,</span>
+        <span class="nx">path</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span>
+        <span class="nx">domain</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">domain</span><span class="p">,</span>
+        <span class="nx">expires</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">expires</span><span class="p">;</span>
+    
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+      
+<span class="c1">// 第三个参数映射到options中</span>
+<span class="nx">setCookie</span><span class="p">(</span><span class="s1">'type'</span><span class="p">,</span><span class="s1">'js'</span><span class="p">,{</span>
+    <span class="na">secure</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">expires</span><span class="p">:</span> <span class="mi">60000</span>
+<span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>这种写法存在的问题是，仅查看函数的声明部分，无法辨识函数的预期参数，必须阅读函数体才能确定所有参数。</p>
+  </li>
+  <li>
+    <p>将options定义为解构参数，就能清晰地通过函数声明看出参数是哪些。</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,</span> <span class="p">{</span><span class="nx">secure</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">domain</span><span class="p">,</span> <span class="nx">expires</span><span class="p">})</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+
+<span class="nx">setCookie</span><span class="p">(</span><span class="s1">'type'</span><span class="p">,</span><span class="s1">'js'</span><span class="p">,{</span>
+    <span class="na">secure</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">expires</span><span class="p">:</span> <span class="mi">60000</span>
+<span class="p">});</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>如果调用函数时不提供被解构的参数会报错，上诉代码等价于下面这段代码</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="p">{</span><span class="nx">secure</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">domain</span><span class="p">,</span> <span class="nx">expires</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span><span class="p">;</span>
+    <span class="c1">// 设置cookie的代码 </span>
+<span class="p">}</span>
+     
+<span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">);</span> <span class="c1">// 程序报错</span>
+
+<span class="c1">// 如果解构参数是必须的，那就不用担心这些问题，但是如果希望解构参数是非必须，需要提供默认参数</span>
+<span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,</span> <span class="p">{</span><span class="nx">secure</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">domain</span><span class="p">,</span> <span class="nx">expires</span><span class="p">}</span> <span class="o">=</span> <span class="p">{}</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码 </span>
+<span class="p">}</span>     
+     
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>解构参数的默认值</p>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     
+<span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,{</span>
+    <span class="nx">secure</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">path</span> <span class="o">=</span> <span class="s1">'/'</span><span class="p">,</span>
+    <span class="nx">domain</span> <span class="o">=</span> <span class="s1">'example.com'</span><span class="p">,</span>
+    <span class="nx">expires</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">36000000</span><span class="p">)</span>
+<span class="p">})</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+   
+<span class="c1">// 这样写的话函数声明变得很复杂了，并且如果当结构参数是非必须时，仍然需要写一个默认值，如下</span>
+
+<span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,{</span>
+    <span class="nx">secure</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">path</span> <span class="o">=</span> <span class="s1">'/'</span><span class="p">,</span>
+    <span class="nx">domain</span> <span class="o">=</span> <span class="s1">'example.com'</span><span class="p">,</span>
+    <span class="nx">expires</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">36000000</span><span class="p">)</span>
+<span class="p">}</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">secure</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">path</span> <span class="p">:</span> <span class="s1">'/'</span><span class="p">,</span>
+    <span class="na">domain</span> <span class="p">:</span> <span class="s1">'example.com'</span><span class="p">,</span>
+    <span class="na">expires</span> <span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">36000000</span><span class="p">)</span>    
+<span class="p">})</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+
+<span class="c1">// 这样仍然会产生较多的冗余代码，可以将默认值提取到一个独立的配置中，然后使用该对象作为解构和默认参数的一部分</span>
+     
+<span class="kd">const</span> <span class="nx">setCookieDefaults</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">secure</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">path</span> <span class="p">:</span> <span class="s1">'/'</span><span class="p">,</span>
+    <span class="na">domain</span> <span class="p">:</span> <span class="s1">'example.com'</span><span class="p">,</span>
+    <span class="na">expires</span> <span class="p">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">+</span> <span class="mi">36000000</span><span class="p">)</span>    
+<span class="p">};</span>
+<span class="kd">function</span> <span class="nx">setCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="nx">value</span><span class="p">,{</span>
+    <span class="nx">secure</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">.</span><span class="nx">secure</span><span class="p">,</span>
+    <span class="nx">path</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span>
+    <span class="nx">domain</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">.</span><span class="nx">domain</span><span class="p">,</span>
+    <span class="nx">expires</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">.</span><span class="nx">expires</span>
+<span class="p">}</span> <span class="o">=</span> <span class="nx">setCookieDefaults</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 设置cookie的代码</span>
+<span class="p">}</span>
+
+<span class="c1">// 这样在需要修改参数的默认值时会很方便，只需要修改 setCookieDefaults 即可。</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p><br /> 
+下一篇总结一下Symbol，Set集合和Map集合，迭代器（Iterator）和生成器（Generator）。</p>
+</div>
+    </div>
+    <div class="sidebar-list">
+        <div class="tag-cloud">
+    <ul>
+        <li>JavaScript</li>
+        <li>Node.js</li>
+        <li>Vue</li>
+        <li>React</li>
+        <li>Koa2</li>
+        <li>Webpack</li>
+        <li>TypeScript</li>
+        <li>Express</li>
+    </ul>
+</div>
+        <div class="search-box">
+    <div class="search-holder">
+        <input class="search-input" type="text" placeholder="没事别瞎点搜索">
+    </div>
+</div>
+        <div class="blog-author">
+    <div class="avatar">
+        <img src="/assets/images/avatar/dfyc.jpeg" alt="" width="160">
+    </div>
+    <ul>
+        <li>昵称：lizm</li>
+        <li>性别：少年</li>
+        <li>生日：1993-03-29</li>
+        <li>签名：</li>
+        <li>hahaahahhahahahahahaahahhahahaahah</li>
+    </ul>
+</div>
+        <div class="date-picker">
+    <link rel="stylesheet" href="/lib/calendar/css/calendar.css">
+    <script src="/lib/jquery/jquery-3.4.1.js"></script>
+    <script src="/lib/calendar/js/calendar.js"></script>
+    <div id="calendar" class="calendar"></div>
+</div>
+        <div class="hot-posts">
+
+</div>
+    </div>
+</div>
+</body>
+</html>

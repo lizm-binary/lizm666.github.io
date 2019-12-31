@@ -267,3 +267,9 @@ ul {
   .music-box video {
     width: 100%;
     height: 55px; }
+
+.post-content blockquote {
+  border-left-color: #ffba3c;
+  color: #111;
+  background: #fef9ed;
+  border-radius: 0 6px 6px 0; }
