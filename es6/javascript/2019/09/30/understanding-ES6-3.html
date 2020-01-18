@@ -903,6 +903,524 @@
 
 <h3>2. Promise 与异步编程</h3>
 
+<ul>
+  <li>
+    <p>异步编程的背景</p>
+
+    <blockquote>
+      <p>JavaScript 引擎是基于单线程事件循环的概念构建的，同一时刻只允许一个代码块在执行，所以需要跟踪即将运行的代码，那些代码被放在一个任务队列中，每当一段代码准备执行时，都会被添加到任务队列。每当JS引擎中的一段代码执行结束，事件循环会执行队列中的下一个任务，它是JS引擎中的一段程序，负责监控代码执行并管理任务队列。请记住，队列中的任务会从第一个一直执行到最后一个。</p>
+    </blockquote>
+
+    <ul>
+      <li>
+        <p>事件模型</p>
+
+        <blockquote>
+          <p>用户点击按钮或者按下键盘上的按键会触发类似 onclick 这样的事件，它会向任务队列添加一个新任务来响应用户的操作，这是 JS 中最基础的异步编程形式，直到事件触发时才执行事件处理程序，且执行时上下文与定义时的相同。</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'my-btn'</span><span class="p">);</span>
+<span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Clicked'</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>        </div>
+        <blockquote>
+          <p>事件模型适用于简单的交互处理，然而将多个独立的异步调用连接在一起会使程序更加复杂，因为你必须跟踪每个事件的事件目标。从外，必须要保证事件在添加时间处理程序之后才被触发。所以，尽管事件模型适用于响应用户交互和完成类似的低频功能，但其对于更复杂的需求来说却不是很灵活。</p>
+        </blockquote>
+      </li>
+      <li>
+        <p>回调模式</p>
+
+        <blockquote>
+          <p>Node.js 通过普及回调函数来改进异步编程模型，回调模式与事件模型类似，异步代码都会在将来的某个时间点执行，二者的区别是回调模式中被调用的函数是作为参数传入的。</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">readFile</span><span class="p">(</span><span class="s2">"example.txt"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+    <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+  <span class="p">}</span>
+      
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span>
+<span class="p">});</span>
+      
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Hi"</span><span class="p">);</span>
+</code></pre></div>        </div>
+        <blockquote>
+          <p>Node.js 推行错误优先的回调风格。回调模式比事件模型更灵活，因为相比之下，回调模式链接多个调用更容易。</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">readFile</span><span class="p">(</span><span class="s2">"example.txt"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+    <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+  <span class="p">}</span>
+      
+  <span class="nx">writeFile</span><span class="p">(</span><span class="s2">"example.txt"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+      <span class="k">throw</span> <span class="nx">err</span><span class="p">;</span>
+    <span class="p">}</span>
+       
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"File was written"</span><span class="p">);</span>
+  <span class="p">});</span>       
+<span class="p">});</span>      
+</code></pre></div>        </div>
+        <blockquote>
+          <p>虽然这个模式运行效果很不错，但是很快你就会发现，由于嵌套太多层回调函数会导致代码陷入回调地狱而变得难以理解和维护。如果你想实现更复杂的功能，比如并行执行两个异步操作，当两个操作都结束时通知你；或者同时进行两个异步操作，只取优先完成的操作结果。这种情况你需要跟踪多个回调函数并清理这些操作，Promise就能很好地改善这样的情况。</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Promise 的基础知识</p>
+
+    <blockquote>
+      <p>Promise相当于异步操作结果的占位符，它不会去订阅一个事件，也不会传递一个回调函数给目标函数，而是让函数返回一个Promise对象。未来对这个对象的操作完全取决于Promise的生命周期。</p>
+    </blockquote>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">readFile</span><span class="p">(</span><span class="s2">"example.txt"</span><span class="p">);</span>
+</code></pre></div>    </div>
+
+    <ul>
+      <li>
+        <p>Promise 的生命周期</p>
+
+        <blockquote>
+          <p>每个Promise 都会经历一个短暂的生命周期：先是处于进行中（pending）的状态，此时操作尚未完成，所以它也是未处理（unsettled）的；一旦异步操作执行结束，Promise则变成已处理（settled）的状态。已处理的状态包含两种：</p>
+        </blockquote>
+
+        <ul>
+          <li>
+            <p>Fulfilled， Promise 异步操作成功完成。</p>
+          </li>
+          <li>
+            <p>Rejected， 由于程序错误或者一些其他原因，Promise异步操作未能成功完成。</p>
+          </li>
+        </ul>
+
+        <blockquote>
+          <p>内部属性[[PromiseState]]被用来表示Promise的3种状态：“pending”、“fulfilled”、“rejected”。这个属性不会暴露在Promise对象上，所以不能以编程的方式检测到Promise的状态，只有当Promise的状态改变时，通过then()方法采取特定的行动。</p>
+        </blockquote>
+
+        <blockquote>
+          <p>所有的Promise都有then() 方法，它接受两个参数：第一个是当Promise的状态变为 fulfilled 时要调用的函数，与异步操作相关的附加数据都会传递给这个完成函数（fulfillment function）；第二个是当Promise的状态改变为 rejected 时要调用的函数，其与完成时调用的函数类似，所有与失败状态相关的附加数据都会传递给这个拒绝函数（rejection function）。</p>
+        </blockquote>
+
+        <blockquote>
+          <p>如果一个对象实现了上述的then() 方法，那这个对象我们称之为 thenable 对象。所有的Promise对象都是thenable对象，但不是所以的thenable对象都是Promise对象。</p>
+        </blockquote>
+
+        <blockquote>
+          <p>then() 方法的两个参数都是可选的，可以按照需要任意组合来监听Promise，示例代码如下：</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">readFile</span><span class="p">(</span><span class="s2">"example.txt"</span><span class="p">);</span>
+      
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 完成</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span>
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 拒绝</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">});</span>
+      
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 完成</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span>
+<span class="p">});</span>
+      
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 拒绝</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>        </div>
+        <blockquote>
+          <p>Promise 还有一个 catch() 方法，相当于只给其传入拒绝处理程序的 then() 方法。</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">promise</span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 拒绝</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">});</span>
+      
+<span class="c1">// 与以下调用相同</span>
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 拒绝</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">});</span>      
+</code></pre></div>        </div>
+
+        <blockquote>
+          <p>then() 方法和 catch() 方法配合起来使用才能更好地处理异步操作的结果。这套体系能清楚地指明异步操作结果是成功还是失败，比起事件模型和回调函数更好用。但是要记住，如果不给 Promise 添加拒绝处理程序，那所有的失败就自动被忽略了，所以一定要添加拒绝处理程序，即使只在函数内部记录失败的结果也行。</p>
+        </blockquote>
+
+        <blockquote>
+          <p>如果一个 Promise 处于已处理状态，在这之后添加到任务队列中的处理程序仍将执行。所以无论什么时候你都可以添加新的完成处理程序或拒绝处理程序，同时也可以保证这些处理程序能被调用。</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">readFile</span><span class="p">(</span><span class="s2">"example.txt"</span><span class="p">);</span>
+      
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 完成</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span>
+          
+    <span class="c1">// 现在又添加一个</span>
+    <span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+       <span class="c1">// 完成</span>
+       <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div>        </div>
+        <blockquote>
+          <p>每次调用 then() 方法或 catch() 方法都会创建一个新任务，当 Promise 被解决（resolved）时执行。这些任务最终会被加入到一个为Promise量身定制的独立队列中，这个任务队列的具体细节对于理解如何使用Promise而言并不重要，通常你只需要知道任务队列是如何运行的就可以了。</p>
+        </blockquote>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>创建未完成的 Promise</p>
+
+    <blockquote>
+      <p>用Promise 构造函数创建新的 Promise，构造函数只接受一个参数：包含初始化 Promise 代码的执行器（executor）函数。执行器接受两个参数，分别是 resolve() 函数和 reject() 函数。执行器成功完成时调用 resolve() 函数，反之，失败时则调用 reject() 函数。</p>
+    </blockquote>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'fs'</span><span class="p">);</span>
+    
+<span class="kd">function</span> <span class="nx">readFile</span><span class="p">(</span><span class="nx">filename</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// function 即为执行器</span>
+        
+    <span class="c1">// 触发异步操作</span>
+    <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="nx">filename</span><span class="p">,</span> <span class="p">{</span><span class="na">encoding</span><span class="p">:</span> <span class="s2">"utf-8"</span><span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// 检查是否有错误</span>
+      <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+        <span class="nx">reject</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+      <span class="p">}</span>
+          
+      <span class="c1">// 成功读取文件</span>
+      <span class="nx">resolve</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+    
+<span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nx">readFile</span><span class="p">(</span><span class="s2">"example.txt"</span><span class="p">);</span>
+    
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+   <span class="c1">// 完成</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">contents</span><span class="p">);</span>
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+   <span class="c1">// 拒绝</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>    </div>
+    <blockquote>
+      <p>readFile() 方法被调用时执行器会立即执行，在执行器中，无论是调用 resolve() 还是 reject() ，都会向任务队列中添加一个任务来解决这个Promise。Promise 具有类似setTimeout的工作原理，Promise 的执行器会立即执行，然后才执行后续流程中的代码。</p>
+    </blockquote>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Promise"</span><span class="p">);</span>
+  <span class="nx">resolve</span><span class="p">();</span>
+<span class="p">});</span>
+    
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Hi"</span><span class="p">);</span>
+    
+<span class="c1">// 输出</span>
+<span class="c1">// Promise</span>
+<span class="c1">// Hi</span>
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p>调用 resolve() 后会触发一个异步操作，传入then() 和 catch() 方法的函数会被添加到任务队列中并异步执行。不管then() 和 catch() 在代码中的位置如何，它们都不会立即执行，这是因为完成处理程序和拒绝处理程序总是在执行器完成后被添加到任务队列的末尾。</p>
+    </blockquote>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Promise"</span><span class="p">);</span>
+  <span class="nx">resolve</span><span class="p">();</span>
+<span class="p">});</span>
+    
+<span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Resolved."</span><span class="p">);</span>
+<span class="p">});</span>
+    
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Hi"</span><span class="p">);</span>
+    
+<span class="c1">// 输出</span>
+<span class="c1">// Promise</span>
+<span class="c1">// Hi</span>
+<span class="c1">// Resolved.</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>创建已处理的 Promise</p>
+
+    <blockquote>
+      <p>创建未处理Promise 的最好方法是使用 Promise的构造函数，这是由于 Promise 执行器具有动态性。但如果你想用 Promise 来表示一个已知的值，则编排一个只是简单地给 resolve() 函数传值的任务并无实际意义，反倒是可以采用以下两种方式根据特定的值来创建已解决的 Promise。</p>
+    </blockquote>
+
+    <ul>
+      <li>
+        <p>使用 Promise.resolve() 创建一个已完成的 Promise</p>
+      </li>
+      <li>
+        <p>使用 Promise.reject() 创建一个已拒绝的 Promise</p>
+      </li>
+    </ul>
+
+    <blockquote>
+      <p>Promise.resolve() 和 Promise.reject() 方法很像，它们都只接受一个参数并返回一个已处理的 Promise，无非一个是已完成状态一个是已拒绝状态。也就是说直接调用这两个方法返回的Promise不会有任务编排的过程，并且需要向 Promise 添加一至多个处理程序来获取值。</p>
+    </blockquote>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+  <span class="nx">promise</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>  <span class="c1">// 42</span>
+  <span class="p">});</span>
+    
+  <span class="kd">let</span> <span class="nx">promise2</span> <span class="o">=</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="mi">32</span><span class="p">);</span>
+  <span class="nx">promise</span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>  <span class="c1">// 42</span>
+  <span class="p">});</span>
+</code></pre></div>    </div>
+
+    <blockquote>
+      <p>Promise.resolve() 返回的Promise只会调用then()方法，永远不会调用catch() 方法，反之， Promise.reject() 返回的Promise只会调用 catch() 方法，永远不会调用 then() 方法。如果向 Promise.resolve() 或者 Promise.reject() 中传入一个Promise，这个 Promise 会直接被返回出去。</p>
+    </blockquote>
+
+    <ul>
+      <li>非 Promise 的 Thenable 对象</li>
+    </ul>
+
+    <blockquote>
+      <p>Promise.resolve() 方法和 Promise.reject() 方法都可以接受非 Promise 的 Thenable 对象作为参数。如果传入一个非 Promise 的 Thenable 对象，则这些方法会创建一个新的 Promise，并在 then() 函数中被调用。</p>
+    </blockquote>
+
+    <blockquote>
+      <p>拥有 then() 方法并且接受 resolve 和 reject 这两个参数的普通对象就是非 Promise 的 Thenable 对象。</p>
+    </blockquote>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">// 已完成</span>
+  <span class="kd">let</span> <span class="nx">thenable</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">then</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">resolve</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+    
+  <span class="kd">let</span> <span class="nx">p1</span> <span class="o">=</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">thenable</span><span class="p">);</span>
+      
+  <span class="nx">p1</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span> <span class="c1">// 42</span>
+  <span class="p">});</span>
+    
+  <span class="c1">// 已拒绝</span>
+  <span class="kd">let</span> <span class="nx">thenable2</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">then</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">reject</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+    
+  <span class="kd">let</span> <span class="nx">p2</span> <span class="o">=</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">thenable</span><span class="p">);</span>
+      
+  <span class="nx">p2</span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span> <span class="c1">// 42</span>
+  <span class="p">});</span>
+</code></pre></div>    </div>
+    <blockquote>
+      <p>有了 Promise.resolve() 方法和 Promise.reject() 方法，我们可以更轻松地处理非 Promise 的 Thenable 对象。在ES6引入 Promise 对象之前，许多库都使用了 Thenable 对象，所以如果要向后兼容之前已有的库，则将 Thenable 对象转换成正式的 Promise 的能力就显得至关重要了。如果不确定某个对象是不是 Promise 对象，那么可以根据预期的结果将其传入 Promise.resolve() 方法或者 Promise.reject() 方法中，如果它是 Promise 对象，则不会有任何变化。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>执行器错误</p>
+
+    <blockquote>
+      <p>如果执行器内部抛出一个错误，则 Promise 的拒绝处理程序就会被调用。</p>
+    </blockquote>
+
+    <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"Explosion!"</span><span class="p">);</span>
+<span class="p">});</span>
+    
+<span class="nx">promise</span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span> <span class="c1">// "Explosion!"</span>
+<span class="p">});</span>
+    
+<span class="c1">// 等价于如下代码</span>
+    
+<span class="kd">let</span> <span class="nx">promise</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">try</span><span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"Explosion!"</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+    <span class="nx">reject</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+    
+<span class="nx">promise</span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span> <span class="c1">// "Explosion!"</span>
+<span class="p">});</span>    
+</code></pre></div>    </div>
+    <blockquote>
+      <p>为了简化这种常见的用例，执行器会捕获所有抛出的错误，但只有当拒绝处理程序存在时才会记录执行器中抛出的错误，否则错误会被忽略掉。在早期的时候，开发者使用Promise的时候会遇到这样的问题，后来JS环境提供了一些捕获已拒绝 Promise 的钩子函数来解决这个问题。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>全局的 Promise 拒绝处理</p>
+
+    <blockquote>
+      <p>有关 Promise 的其中一个最具争议性的问题是，如果在没有拒绝处理程序的情况下拒绝一个 Promise，那么不会提示失败信息，这是JavaScript语言中唯一一处没有强制报错的地方，一些人认为这是标准中最大的缺陷。因为任何时候都可以调用 then() 方法或 catch() 方法，无论 Promise 是否已解决这两个方法都能正常运行，但这样就很难知道一个 Promise 何时被处理。尽管这个问题在未来的ECMAScript标准中可能会被解决，但是Node.js 和浏览器环境都已经分别做出了一些改变来解决开发者的这个痛点，这些改变不是 ES6 标准的一部分，但是当你使用 Promise 的时候它们确实是非常有价值的工具。</p>
+    </blockquote>
+
+    <ul>
+      <li>
+        <p>Node.js 环境的拒绝处理</p>
+
+        <blockquote>
+          <p>在Node.js 中，处理Promise拒绝时会触发 process 对象上的两个事件：</p>
+        </blockquote>
+
+        <ul>
+          <li>
+            <p>unhandledRejection 在一个事件循环中，当 Promise 被拒绝，并且没有提供拒绝处理程序时被调用。</p>
+          </li>
+          <li>
+            <p>rejectionHandled 在一个事件循环后，当 Promise 被拒绝，并且没有提供拒绝处理程序时被调用。</p>
+          </li>
+        </ul>
+
+        <blockquote>
+          <p>设计这些事件是用来识别那些被拒绝却又没被处理过的 Promise 的。拒绝原因（通常是一个错误对象）及被拒绝的 Promise 作为参数被传入 unhandledRejection 事件处理程序中。事件处理程序分别接受错误对象和 Promise 作为它的两个参数。而rejectionHandled 事件处理程序只接受一个参数，那就是被拒绝的 Promise。</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">rejected</span><span class="p">;</span>
+    
+<span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"unhandledRejection"</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">,</span> <span class="nx">promise</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">reason</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>        <span class="c1">// "Explosion!"</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">rejected</span> <span class="o">===</span> <span class="nx">promise</span><span class="p">);</span>  <span class="c1">// true</span>
+<span class="p">});</span>
+    
+<span class="nx">rejected</span> <span class="o">=</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"Explosion!"</span><span class="p">));</span>
+    
+<span class="kd">let</span> <span class="nx">rejected2</span><span class="p">;</span>
+    
+<span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"rejectionHandled"</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">promise</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">rejected</span> <span class="o">===</span> <span class="nx">promise</span><span class="p">);</span>  <span class="c1">// true</span>
+<span class="p">});</span>
+    
+<span class="nx">rejected2</span> <span class="o">=</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"Explosion!"</span><span class="p">));</span>    
+    
+<span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">rejected2</span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>  <span class="c1">// "Explosion!"</span>
+  <span class="p">});</span>
+<span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+</code></pre></div>        </div>
+        <blockquote>
+          <p>这里的 rejectionHandled 事件在拒绝处理程序最后被调用时触发，如果在创建 rejected 之后直接添加拒绝处理程序，那么 rejectionHandled 事件不会被触发，因为 rejected 创建的过程与拒绝处理程序的调用在同一个时间循环中，此时 rejectionHandled 事件尚未生效。</p>
+        </blockquote>
+
+        <blockquote>
+          <p>通过事件 rejectionHandled 和事件 unhandledRejection 将潜在未处理的拒绝存储为一个列表，等待一段时间后检查列表便能够正确地跟踪潜在的未处理拒绝，我们可以使用如下代码来实现一个简单的未处理拒绝跟踪器：</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">possiblyUnhandledRejection</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Map</span><span class="p">();</span>
+    
+<span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"unhandledRejection"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">,</span> <span class="nx">promise</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">possiblyUnhandledRejection</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">promise</span><span class="p">,</span> <span class="nx">reason</span><span class="p">);</span>
+<span class="p">});</span>
+    
+<span class="nx">process</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"handledRejection"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">promise</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">possiblyUnhandledRejection</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">promise</span><span class="p">);</span>
+<span class="p">});</span>
+    
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">possiblyUnhandledRejection</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">,</span> <span class="nx">promise</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">reason</span><span class="p">.</span><span class="nx">message</span> <span class="p">?</span> <span class="nx">reason</span><span class="p">.</span><span class="nx">message</span> <span class="p">:</span> <span class="nx">reason</span><span class="p">);</span>
+    
+    <span class="c1">// 处理这些拒绝</span>
+    <span class="nx">handleRejection</span><span class="p">(</span><span class="nx">promise</span><span class="p">,</span> <span class="nx">reason</span><span class="p">);</span>
+  <span class="p">});</span>
+    
+  <span class="nx">possiblyUnhandledRejection</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+<span class="p">},</span> <span class="mi">60000</span><span class="p">);</span>
+    
+</code></pre></div>        </div>
+        <blockquote>
+          <p>这里使用的是Map集合而不是WeakMap集合，因为你要定期检查集合中一个Promise是否存在，WeakMap无法实现。</p>
+        </blockquote>
+      </li>
+      <li>
+        <p>浏览器环境的拒绝处理</p>
+
+        <blockquote>
+          <p>浏览器也是通过触发两个事件来识别未处理的拒绝的，虽然这些事件是在 window 对象上触发的，但实际上与 Node.js 中的完全等效。</p>
+        </blockquote>
+
+        <ul>
+          <li>
+            <p>unhandledrejection 在一个事件循环中，当 Promise 被拒绝，并且没有提供拒绝处理程序时被调用。</p>
+          </li>
+          <li>
+            <p>rejectionhandled 在一个事件循环后，当 Promise 被拒绝，并且没有提供拒绝处理程序时被调用。</p>
+          </li>
+        </ul>
+
+        <blockquote>
+          <p>与Node.js 环境不同的是，在浏览器中，这两个事件中都可以使用拒绝值（reason），且事件处理程序接受一个有如下三个属性的事件对象作为参数：</p>
+        </blockquote>
+
+        <ul>
+          <li>
+            <p>type 事件名称（”unhandledrejection” 或 “rejectionhandled”）</p>
+          </li>
+          <li>
+            <p>promise 被拒绝的Promise对象</p>
+          </li>
+          <li>
+            <p>reason 来自Promise的拒绝值</p>
+          </li>
+        </ul>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">let</span> <span class="nx">rejected</span><span class="p">;</span>
+        
+  <span class="nb">window</span><span class="p">.</span><span class="nx">onunhandledrejection</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">type</span><span class="p">);</span> <span class="c1">// "unhandledrejection"</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">reason</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span> <span class="c1">// "Explosion!"</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">promise</span> <span class="o">===</span> <span class="nx">rejected</span><span class="p">);</span> <span class="c1">// true</span>
+  <span class="p">};</span>
+      
+  <span class="nb">window</span><span class="p">.</span><span class="nx">onrejectionhandled</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">type</span><span class="p">);</span> <span class="c1">// "rejectionhandled"</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">reason</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span> <span class="c1">// "Explosion!"</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">promise</span> <span class="o">===</span> <span class="nx">rejected</span><span class="p">);</span> <span class="c1">// true</span>
+  <span class="p">};</span>
+        
+  <span class="nx">rejected</span> <span class="o">=</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"Explosion!"</span><span class="p">));</span>
+</code></pre></div>        </div>
+        <blockquote>
+          <p>你也可以使用 addEventListener(“unhandledrejection”) 和 addEventListener(“rejectionhandled”)，每个事件处理程序接受一个含有被拒绝Promise信息的事件对象，该对象的属性type、promise、reason在这两个事件处理程序中均可使用。浏览器中的跟踪未处理拒绝的实现和Node.js中的实现也十分相似：</p>
+        </blockquote>
+
+        <div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">let</span> <span class="nx">possiblyUnhandledRejection</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Map</span><span class="p">();</span>
+    
+<span class="nb">window</span><span class="p">.</span><span class="nx">onunhandledrejection</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">possiblyUnhandledRejection</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">promise</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">reason</span><span class="p">);</span>
+<span class="p">};</span>
+    
+<span class="nb">window</span><span class="p">.</span><span class="nx">onrejectionhandled</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">possiblyUnhandledRejection</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">promise</span><span class="p">);</span>
+<span class="p">};</span>
+    
+<span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">possiblyUnhandledRejection</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">,</span> <span class="nx">promise</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">reason</span><span class="p">.</span><span class="nx">message</span> <span class="p">?</span> <span class="nx">reason</span><span class="p">.</span><span class="nx">message</span> <span class="p">:</span> <span class="nx">reason</span><span class="p">);</span>
+    
+    <span class="c1">// 处理这些拒绝</span>
+    <span class="nx">handleRejection</span><span class="p">(</span><span class="nx">promise</span><span class="p">,</span> <span class="nx">reason</span><span class="p">);</span>
+  <span class="p">});</span>
+    
+  <span class="nx">possiblyUnhandledRejection</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+<span class="p">},</span> <span class="mi">60000</span><span class="p">);</span>
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+
 <h3>3. 代理（Proxy）</h3>
 
 </div>
